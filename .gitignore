@@ -1,0 +1,10 @@
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+*.log
+
+# секреты: любые .env, кроме шаблона без значений
+.env
+.env.*
+!.env.example
