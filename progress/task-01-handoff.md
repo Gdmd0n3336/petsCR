@@ -1,25 +1,20 @@
-# Handoff: TASK-01 каркас приложения — после этапа 3 (план)
-**Date:** 2026-10-09
+# Handoff: TASK-01 каркас приложения — после этапов 8–10
+**Date:** 2026-10-13
 
 ## Goal
-Пустой, но настоящий каркас Lapa (React + TS, Telegram Mini App + браузер) с lint/typecheck/test/build/dev и CI.
-
-## Approach
-Vite 8, React 19, TS ~6.0 (из-за typescript-eslint <6.1), Vitest 5 + jsdom, ESLint 10 + Prettier, @telegram-apps/sdk через обёртку с isTMA(), ленивый клиент Supabase, без роутера.
+Каркас Lapa (React + TS, Telegram Mini App + браузер) с lint/typecheck/test/build/dev и CI.
 
 ## Done
-- [x] Этап 1: `thoughts/research/2026-10-08-task-01-app-skeleton.md`
-- [x] Этап 2: `specs/2026-10-09-task-01-app-skeleton.md`
-- [x] Этап 3: `plans/2026-10-09-task-01-app-skeleton.md`
-- [ ] Phase 1–4 реализации (ждут подтверждения Макса)
+- [x] Этапы 1–3: research, spec, plan
+- [x] Phase 1–4 (c0caf2c, edb1d8d, 14e0d7b, 9ef29df); CI на GitHub success (run 38402741462)
+- [x] Этап 8: все проверки + npm audit + поиск секретов
+- [x] Этап 9: ревью свежим контекстом (10 находок, 3 medium, без critical/high)
+- [x] Этап 10: /security-review — находок нет
+- [ ] Этап 11: правки по ревью — ждут решения Макса
 
-## Current Problem / Next Step
-Ответы Макса на 2 вопроса в плане (шрифты, ESLint-правило против кириллицы), затем «Implement Phase 1 according to plan».
+## Next Step
+Решения Макса: override valibot (Решение 12), разметка вкладок (tabs vs nav+aria-current), import-x/no-cycle. Затем этап 11.
 
 ## Key Files
-- `plans/2026-10-09-task-01-app-skeleton.md` — фазы, Challenge Log, источники версий
-- `specs/2026-10-09-task-01-app-skeleton.md` — критерии приёмки (контракт)
-
-## Key Decisions Made
-- Ветка `feature/task-01-app-skeleton` (push разрешён облаком), PR после ревью Макса.
-- isTMA() подтверждён по типам @telegram-apps/sdk@3.11.8; запасной вариант window.Telegram.WebApp.initData.
+- `plans/2026-10-09-task-01-app-skeleton.md` — Challenge Log (Решения 10–13 добавлены при реализации)
+- `specs/2026-10-09-task-01-app-skeleton.md` — критерии приёмки

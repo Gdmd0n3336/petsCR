@@ -1,7 +1,7 @@
 # Plan: TASK-01 каркас приложения
 **Spec:** specs/2026-10-09-task-01-app-skeleton.md
 **Research:** thoughts/research/2026-10-08-task-01-app-skeleton.md
-**Status:** planning
+**Status:** in_progress (фазы 1–4 completed, этапы 8–10 пройдены, ждёт ревью Макса и решения по этапу 11)
 **Branch:** `feature/task-01-app-skeleton` (пробный push 2026-10-09 прошёл: облако не ограничивает push веткой `claude/*`, работаем в ветке по ТЗ). Предыдущая ветка `claude/clever-ride-he3q3z` содержит TASK-00 и исследование; новая ветка создана от неё. PR не создаём до завершения задачи и ревью Макса.
 
 ## Challenge Log
@@ -54,6 +54,19 @@
 ### Решение 10. Проверка циклических зависимостей (уровень 2)
 `madge@8.0.0` объявляет необязательный peer `typescript ^5.4.4`, у нас TS 6. В Phase 1 проверяем установку: если `npm install -D madge` проходит без конфликта, добавляем скрипт `check:cycles`; если нет — уровень 2 по циклам помечаем «не выполнено: инструмент не поддерживает TS 6», без обходов через `--force`.
 
+### Решение 11 (добавлено при реализации). Шрифты: только latin и cyrillic
+Документация Fontsource (Context7 `/websites/fontsource`, «Individual Subsets»): импорт отдельных подмножеств «not available for variable fonts». Поэтому `src/fonts.css` объявляет свои `@font-face` на файлы `latin` и `cyrillic` из пакетов, `unicode-range` скопированы из `index.css` пакетов. В `dist/` попадают ровно 4 woff2. Запасной шрифт системный.
+
+### Решение 12 (добавлено, ТРЕБУЕТ ПОДТВЕРЖДЕНИЯ МАКСА). `overrides: { valibot: ^1.5.0 }`
+`@telegram-apps/sdk@3.11.8` (последняя) жёстко тянет `valibot@1.0.0` → `npm audit`: 4 high (GHSA-vqpr-j7v3-hqw9 ReDoS в EMOJI_REGEX, GHSA-5qjj-4xww-7phc flatten()). Исправления через прямую зависимость нет (audit предлагает откат SDK на 2.x). Отступление от Problem 7: добавлен override; все тесты зелёные, `npm audit` = 0. В коде SDK вызовов EMOJI_REGEX/flatten() нет. Ревью предлагает сузить до `"@telegram-apps/sdk": { "valibot": "1.5.0" }` и точную версию. Условие удаления: когда `@telegram-apps/sdk` сам поднимет valibot.
+Альтернативы: (a) оставить уязвимость и пометить gate «не пройден»; (b) отказаться от SDK в пользу официального `telegram-web-app.js` (внешний скрипт, без типов).
+
+### Решение 13 (добавлено). Playwright только разово
+Не в зависимостях и не в CI (решение Макса). Использован предустановленный в среде `playwright@1.56.1` (глобально), скрипт в scratchpad: скриншот 390×844, размеры вкладок, загрузка шрифтов, клик по вкладке, ошибки консоли.
+
+### Решение 10 — итог
+`npm install -D madge@^8.0.0` → ERESOLVE (`peerOptional typescript@^5.4.4`). Уровень 2 по циклам: «не выполнено, инструмент не поддерживает TS 6». Замена: правило `import-x/no-cycle` из `eslint-plugin-import-x@4.17.1` (peer `eslint ^10`, `@typescript-eslint/utils ^8.56` — совместимо), запуск в рамках `npm run lint`. Не добавлено, ждёт решения Макса.
+
 ### Источники сверки версий (2026-10-08/09)
 | Пакет | Версия | Источник |
 |---|---|---|
@@ -89,7 +102,7 @@
 ## Phases
 
 ### Phase 1: инструменты
-- **Status:** pending
+- **Status:** completed
 - **Files:** `package.json`, `package-lock.json`, `.nvmrc`, `.gitignore`, `tsconfig.json`, `tsconfig.app.json`, `tsconfig.node.json`, `vite.config.ts`, `eslint.config.js`, `.prettierrc.json`, `.prettierignore`, `index.html`, `src/main.tsx`, `src/vite-env.d.ts`, `src/test/setup.ts`, `src/smoke.test.ts`
 - **Changes:** зависимости из таблицы; скрипты `dev`, `build` (`tsc -b && vite build`), `typecheck` (`tsc -b --noEmit` или `tsc --noEmit -p tsconfig.app.json`), `lint` (`eslint . && prettier --check .`), `format`, `test` (`vitest run`), `preview`.
 - **TDD:** smoke-тест (`expect(true)`), чтобы проверить, что раннер и jsdom работают.
@@ -97,7 +110,7 @@
 - **Impact:** нет существующего кода; проверить, что Prettier не переформатирует документы проекта (`*.md` вне `src` в `.prettierignore`, чтобы не трогать `CLAUDE.md`, `TASKS.md`, скилл).
 
 ### Phase 2: Telegram и Supabase
-- **Status:** pending
+- **Status:** completed
 - **Files:** `src/lib/telegram.ts`, `src/lib/telegram.test.ts`, `src/lib/supabase.ts`, `src/lib/supabase.test.ts`, `.env.example`, `src/vite-env.d.ts`
 - **Changes:** `initTelegram(): { inTelegram: boolean }` (без исключений); `getSupabase()` с `SupabaseConfigError`.
 - **TDD (сначала красные):**
@@ -109,7 +122,7 @@
 - **Impact:** `main.tsx` вызывает `initTelegram()` до рендера.
 
 ### Phase 3: оболочка «Lapa», вкладки, состояния, локализация
-- **Status:** pending
+- **Status:** completed
 - **Files:** `src/App.tsx`, `src/App.test.tsx`, `src/components/TabBar.tsx`, `src/components/ScreenState.tsx`, `src/components/ScreenState.test.tsx`, `src/screens/{Nearby,Catalog,Bookings,Shop,Pet}Screen.tsx`, `src/i18n/ru.ts`, `src/styles.css`
 - **Changes:** заголовок «Lapa»; `TabBar` из пяти кнопок (`role="tablist"`/`tab`, `aria-selected`, высота ≥ 44 px); экраны показывают `ScreenState` со статусом «пусто» (Товары, Питомец — «скоро»); `ScreenState` с вариантами `loading` / `empty` / `error` (+ кнопка «Повторить» у ошибки); токены дизайна как CSS-переменные; шрифты.
 - **TDD:**
@@ -121,7 +134,7 @@
 - **Impact:** нет потребителей, кроме `main.tsx`.
 
 ### Phase 4: CI
-- **Status:** pending
+- **Status:** completed
 - **Files:** `.github/workflows/ci.yml`
 - **Changes:** `on: [push, pull_request]`; `actions/checkout@v7`, `actions/setup-node@v7` (`node-version-file: .nvmrc`, `cache: npm`); `npm ci`, `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`; `permissions: contents: read`.
 - **TDD:** не применимо; проверка — зелёный прогон CI на push ветки (показать статус).
@@ -148,3 +161,8 @@
 | Date | Phase | Changes |
 |------|-------|---------|
 | 2026-10-09 | plan | первая версия плана |
+| 2026-10-13 | 1 | инструменты (c0caf2c) |
+| 2026-10-13 | 2 | Telegram, Supabase, override valibot (edb1d8d) |
+| 2026-10-13 | 3 | оболочка, вкладки, состояния, ru, шрифты (14e0d7b) |
+| 2026-10-13 | 4 | CI (9ef29df), первый прогон GitHub Actions success |
+| 2026-10-13 | 8–10 | интеграция, ревью свежим контекстом, /security-review |
