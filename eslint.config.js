@@ -16,4 +16,26 @@ export default tseslint.config(
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     },
   },
+  {
+    // Строки интерфейса только из src/i18n/ru.ts. Комментарии не проверяются (это не узлы AST).
+    files: ['src/screens/**/*.tsx', 'src/components/**/*.tsx'],
+    ignores: ['**/*.test.tsx'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: 'Literal[value=/[А-Яа-яЁё]/]',
+          message: 'Строки интерфейса берите из src/i18n/ru.ts.',
+        },
+        {
+          selector: 'JSXText[value=/[А-Яа-яЁё]/]',
+          message: 'Строки интерфейса берите из src/i18n/ru.ts.',
+        },
+        {
+          selector: 'TemplateElement[value.raw=/[А-Яа-яЁё]/]',
+          message: 'Строки интерфейса берите из src/i18n/ru.ts.',
+        },
+      ],
+    },
+  },
 );
