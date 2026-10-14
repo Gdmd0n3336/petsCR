@@ -129,7 +129,7 @@ body {
   cursor: pointer;
 }
 
-.tab[aria-selected='true'] {
+.tab[aria-current='page'] {
   background: var(--color-primary-light);
   color: var(--color-primary);
   font-weight: 700;

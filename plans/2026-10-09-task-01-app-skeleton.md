@@ -1,7 +1,7 @@
 # Plan: TASK-01 каркас приложения
 **Spec:** specs/2026-10-09-task-01-app-skeleton.md
 **Research:** thoughts/research/2026-10-08-task-01-app-skeleton.md
-**Status:** in_progress (фазы 1–4 completed, этапы 8–10 пройдены, ждёт ревью Макса и решения по этапу 11)
+**Status:** in_progress (фазы 1–4 completed, этапы 8–11 пройдены, ждёт ревью Макса и PR)
 **Branch:** `feature/task-01-app-skeleton` (пробный push 2026-10-09 прошёл: облако не ограничивает push веткой `claude/*`, работаем в ветке по ТЗ). Предыдущая ветка `claude/clever-ride-he3q3z` содержит TASK-00 и исследование; новая ветка создана от неё. PR не создаём до завершения задачи и ревью Макса.
 
 ## Challenge Log
@@ -57,15 +57,27 @@
 ### Решение 11 (добавлено при реализации). Шрифты: только latin и cyrillic
 Документация Fontsource (Context7 `/websites/fontsource`, «Individual Subsets»): импорт отдельных подмножеств «not available for variable fonts». Поэтому `src/fonts.css` объявляет свои `@font-face` на файлы `latin` и `cyrillic` из пакетов, `unicode-range` скопированы из `index.css` пакетов. В `dist/` попадают ровно 4 woff2. Запасной шрифт системный.
 
-### Решение 12 (добавлено, ТРЕБУЕТ ПОДТВЕРЖДЕНИЯ МАКСА). `overrides: { valibot: ^1.5.0 }`
-`@telegram-apps/sdk@3.11.8` (последняя) жёстко тянет `valibot@1.0.0` → `npm audit`: 4 high (GHSA-vqpr-j7v3-hqw9 ReDoS в EMOJI_REGEX, GHSA-5qjj-4xww-7phc flatten()). Исправления через прямую зависимость нет (audit предлагает откат SDK на 2.x). Отступление от Problem 7: добавлен override; все тесты зелёные, `npm audit` = 0. В коде SDK вызовов EMOJI_REGEX/flatten() нет. Ревью предлагает сузить до `"@telegram-apps/sdk": { "valibot": "1.5.0" }` и точную версию. Условие удаления: когда `@telegram-apps/sdk` сам поднимет valibot.
-Альтернативы: (a) оставить уязвимость и пометить gate «не пройден»; (b) отказаться от SDK в пользу официального `telegram-web-app.js` (внешний скрипт, без типов).
+### Решение 12 (добавлено; вариант (а) подтверждён Максом 2026-10-14). Override valibot только под `@telegram-apps/sdk`
+`"overrides": { "@telegram-apps/sdk": { "valibot": "1.5.0" } }` — точная версия, только в поддереве SDK.
+Причина: `@telegram-apps/sdk@3.11.8` (последняя) жёстко тянет `valibot@1.0.0`; `npm audit` давал 4 high, исправление через прямую зависимость невозможно (audit предлагал откат SDK на 2.x).
+Источник исправления (GitHub Advisory Database): GHSA-vqpr-j7v3-hqw9 (ReDoS в `EMOJI_REGEX`, high) — затронуты `>=0.31.0 <1.2.0`, исправлено в 1.2.0; GHSA-5qjj-4xww-7phc (`record()` + `flatten()`, moderate, CVSS 6.9) — затронуты `<=1.4.1`, исправлено в 1.4.2. Значит, 1.5.0 закрывает обе.
+Проверка: `npm ls valibot --all` — единственная копия `valibot@1.5.0` (sdk, bridge, transformers → deduped). Оговорка: `@telegram-apps/transformers` содержит вшитую урезанную копию valibot в `dist/index.js` (нет `import "valibot"`); override на неё не влияет, но в ней нет ни `flatten()`, ни emoji-регекспа, поэтому обе уязвимости там неприменимы.
+**Условие снятия override:** выйдет версия `@telegram-apps/sdk` (и её `bridge`/`transformers`) с зависимостью `valibot >=1.4.2`; тогда удалить блок `overrides`, `npm install`, убедиться `npm ls valibot` и `npm audit --audit-level=high` = 0.
+**Перепроверить в TASK-07** (вход через Telegram, там SDK начнёт разбирать initData): актуальность override, версию SDK, `npm audit`, что разбор launch params работает на valibot 1.5.0.
 
 ### Решение 13 (добавлено). Playwright только разово
 Не в зависимостях и не в CI (решение Макса). Использован предустановленный в среде `playwright@1.56.1` (глобально), скрипт в scratchpad: скриншот 390×844, размеры вкладок, загрузка шрифтов, клик по вкладке, ошибки консоли.
 
-### Решение 10 — итог
-`npm install -D madge@^8.0.0` → ERESOLVE (`peerOptional typescript@^5.4.4`). Уровень 2 по циклам: «не выполнено, инструмент не поддерживает TS 6». Замена: правило `import-x/no-cycle` из `eslint-plugin-import-x@4.17.1` (peer `eslint ^10`, `@typescript-eslint/utils ^8.56` — совместимо), запуск в рамках `npm run lint`. Не добавлено, ждёт решения Макса.
+### Решение 10 — итог (обновлено 2026-10-14)
+`madge@8.0.0` → ERESOLVE (`peerOptional typescript@^5.4.4`), не установлен, без `--force`.
+Замена (решение Макса): правило `import-x/no-cycle` из `eslint-plugin-import-x@4.17.1`, запускается в `npm run lint`. Совместимость по документации пакета: `peerDependencies` — `eslint ^8.57.0 || ^9.0.0 || ^10.0.0`, `@typescript-eslint/utils ^8.56.0` (у нас 8.71.2 на `typescript@6.0.3`, `npm ls` без конфликтов); flat config — README плагина (Context7 `/un-ts/eslint-plugin-import-x`). Прямой зависимости от TypeScript у плагина нет.
+Настройка без `eslint-import-resolver-typescript`: встроенный `createNodeResolver` с расширениями `.ts/.tsx/.js` + `import-x/parsers` для `@typescript-eslint/parser` (без него правило молча пропускало циклы — проверено). Тест `src/lint-rules.test.ts` проверяет фикстуру с циклом `src/test/fixtures/cycle`.
+
+### Решение 14 (этап 11, решение Макса). Нижнее меню: `nav` + кнопки + `aria-current="page"`
+Вместо ARIA Tabs (ревью: `role="tabpanel"` на `<main>` убирал ориентир main; не было клавиатурной части паттерна; `aria-controls` на несуществующие панели). `<main aria-label>` без роли; тач-зоны 44 px сохранены (`min-height/min-width: var(--tap-min)`).
+
+### Решение 15 (этап 11). Экраны принимают `status` (`loading`/`empty`/`error`) и `onRetry`
+По умолчанию `empty` (данных нет), загрузку и ошибку передаст будущий источник данных. Тест `src/screens/screens.test.tsx`: 5 экранов × 3 состояния.
 
 ### Источники сверки версий (2026-10-08/09)
 | Пакет | Версия | Источник |
@@ -166,3 +178,4 @@
 | 2026-10-13 | 3 | оболочка, вкладки, состояния, ru, шрифты (14e0d7b) |
 | 2026-10-13 | 4 | CI (9ef29df), первый прогон GitHub Actions success |
 | 2026-10-13 | 8–10 | интеграция, ревью свежим контекстом, /security-review |
+| 2026-10-14 | 11 | override valibot сужен; import-x/no-cycle; nav + aria-current; status у экранов; правило кириллицы на src/**/*.tsx; мелкие правки тестов; dev-лог в initTelegram |

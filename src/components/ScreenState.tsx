@@ -1,13 +1,18 @@
 import { ru } from '../i18n/ru';
 
-type Props =
-  | { status: 'loading' }
-  | { status: 'empty'; message?: string; badge?: string }
-  | { status: 'error'; message?: string; onRetry?: () => void };
+export type ScreenStatus = 'loading' | 'empty' | 'error';
+
+type Props = {
+  status: ScreenStatus;
+  /** Текст для «пусто» и «ошибка»; по умолчанию общий текст из ru.ts. */
+  message?: string;
+  badge?: string;
+  onRetry?: () => void;
+};
 
 /** Общие состояния экрана: загрузка, пусто, ошибка. */
-export function ScreenState(props: Props) {
-  if (props.status === 'loading') {
+export function ScreenState({ status, message, badge, onRetry }: Props) {
+  if (status === 'loading') {
     return (
       <div className="screen-state" role="status" aria-live="polite">
         <span className="spinner" aria-hidden="true" />
@@ -16,12 +21,12 @@ export function ScreenState(props: Props) {
     );
   }
 
-  if (props.status === 'error') {
+  if (status === 'error') {
     return (
       <div className="screen-state" role="alert">
-        <p>{props.message ?? ru.state.error}</p>
-        {props.onRetry && (
-          <button type="button" className="button" onClick={props.onRetry}>
+        <p>{message ?? ru.state.error}</p>
+        {onRetry && (
+          <button type="button" className="button" onClick={onRetry}>
             {ru.state.retry}
           </button>
         )}
@@ -31,8 +36,8 @@ export function ScreenState(props: Props) {
 
   return (
     <div className="screen-state">
-      {props.badge && <span className="badge">{props.badge}</span>}
-      <p>{props.message ?? ru.state.empty}</p>
+      {badge && <span className="badge">{badge}</span>}
+      <p>{message ?? ru.state.empty}</p>
     </div>
   );
 }

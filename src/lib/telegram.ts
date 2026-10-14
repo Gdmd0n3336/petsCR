@@ -12,7 +12,12 @@ export function initTelegram(): TelegramEnv {
     init();
     miniApp.ready.ifAvailable();
     return { inTelegram: true };
-  } catch {
+  } catch (error) {
+    if (import.meta.env.DEV) {
+      // Только тип ошибки: текст ошибки SDK может содержать launch params / initData.
+      const kind = error instanceof Error ? error.name : typeof error;
+      console.warn(`[telegram] SDK init failed (${kind}), running in browser mode`);
+    }
     return { inTelegram: false };
   }
 }

@@ -1,5 +1,6 @@
 dist/
 coverage/
+src/test/fixtures/
 package-lock.json
 *.md
 .claude/

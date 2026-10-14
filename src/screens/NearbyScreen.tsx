@@ -1,6 +1,13 @@
 import { ScreenState } from '../components/ScreenState';
 import { ru } from '../i18n/ru';
+import type { ScreenProps } from './types';
 
-export function NearbyScreen() {
-  return <ScreenState status="empty" message={ru.screens.nearby.empty} />;
+export function NearbyScreen({ status = 'empty', onRetry }: ScreenProps) {
+  return (
+    <ScreenState
+      status={status}
+      message={status === 'empty' ? ru.screens.nearby.empty : undefined}
+      onRetry={onRetry}
+    />
+  );
 }

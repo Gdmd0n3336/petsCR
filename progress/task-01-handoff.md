@@ -1,5 +1,5 @@
-# Handoff: TASK-01 каркас приложения — после этапов 8–10
-**Date:** 2026-10-13
+# Handoff: TASK-01 каркас приложения — после этапа 11
+**Date:** 2026-10-14
 
 ## Goal
 Каркас Lapa (React + TS, Telegram Mini App + браузер) с lint/typecheck/test/build/dev и CI.
@@ -10,10 +10,10 @@
 - [x] Этап 8: все проверки + npm audit + поиск секретов
 - [x] Этап 9: ревью свежим контекстом (10 находок, 3 medium, без critical/high)
 - [x] Этап 10: /security-review — находок нет
-- [ ] Этап 11: правки по ревью — ждут решения Макса
+- [x] Этап 11: правки по ревью и решениям Макса (override сужен, import-x/no-cycle, nav + aria-current, status у экранов, правило кириллицы на src/**/*.tsx, правки тестов)
 
 ## Next Step
-Решения Макса: override valibot (Решение 12), разметка вкладок (tabs vs nav+aria-current), import-x/no-cycle. Затем этап 11.
+Ревью Макса, затем PR (только по его команде). В TASK-07 перепроверить override valibot (Решение 12).
 
 ## Key Files
 - `plans/2026-10-09-task-01-app-skeleton.md` — Challenge Log (Решения 10–13 добавлены при реализации)
