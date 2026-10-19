@@ -3,7 +3,7 @@ import type { ImportRow } from './parse.ts';
 export type SqlMeta = { inputName: string; osmTimestamp: string | null };
 
 /** Одна строка без переводов строк и управляющих символов — для SQL-комментария. */
-const oneLine = (value: string) => value.replace(/[\u0000-\u001f\u007f]+/g, ' ');
+const oneLine = (value: string) => value.replace(/\p{Cc}+/gu, ' ');
 
 /**
  * SQL для SQL Editor: upsert в public.venues_import.
