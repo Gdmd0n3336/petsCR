@@ -23,7 +23,7 @@
 Массив записей — одной JSON-строкой в SQL-литерале (экранирование только `'` → `''`), разбор через `jsonb_to_recordset`. Значения тегов никогда не склеиваются в SQL. Альтернативы (dollar-quoting, построчные `values`) отклонены как более хрупкие.
 
 ### Решение 3. Идемпотентность и сохранение решений
-`insert … on conflict (osm_type, osm_id) do update set tags, lat, lng, category, osm_timestamp, last_seen_at = now()`. Не обновляются `status`, `imported_at`, `source`. Исчезнувшие из OSM объекты не удаляются.
+`insert … on conflict (osm_type, osm_id) do update set tags, lat, lng, osm_timestamp = coalesce(новое, сохранённое), last_seen_at = now()`. Не обновляются `status`, `category` (решение Макса 2026-10-20, находка ревью №2: исправление человека важнее тегов OSM), `imported_at`, `source`. Исчезнувшие из OSM объекты не удаляются.
 
 ### Решение 4. Приоритет категорий
 `amenity=veterinary` → `vet_clinic` > `amenity=animal_boarding` → `boarding` > `shop=pet_grooming` → `grooming` > `shop=pet` → `pet_shop`.
@@ -88,4 +88,5 @@
 | 2026-10-19 | plan | первая версия плана |
 | 2026-10-19 | plan v2 | решения Макса: вариант A, без сети (только `--from-file`), PGlite 0.5.10, `source`/`osm_timestamp` |
 | 2026-10-19 | 1–5 | миграция (8fe3cee), разбор (8fe3cee), SQL + PGlite (f24bad0, 695f880), CLI (a57014b), README (496f27e) |
+| 2026-10-20 | 11 | решения Макса: category не обновляется при повторе; папка вместо файла → ошибка по-русски; выходные файлы в .gitignore; coalesce(osm_timestamp) |
 | 2026-10-19 | 8–10 | проверки, реальный файл Макса (51 объект), ревью свежим контекстом, /security-review — уязвимостей нет; правки доказанных ошибок ревью (872c956): remark, суррогаты, timestamp, set local; CI 23 с (npm test 6 с) |

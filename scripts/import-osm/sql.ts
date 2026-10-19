@@ -9,7 +9,8 @@ const oneLine = (value: string) => value.replace(/\p{Cc}+/gu, ' ');
  * SQL для SQL Editor: upsert в public.venues_import.
  * Все данные передаются одной JSON-строкой (экранируется только «'»), разбор делает Postgres
  * через jsonb_to_recordset — значения тегов никогда не склеиваются в SQL.
- * Повторный запуск безопасен: status, imported_at и source у существующих строк не меняются.
+ * Повторный запуск безопасен: status, category (её правит человек), imported_at и source
+ * у существующих строк не меняются; дата данных OSM не затирается, если в новом файле её нет.
  */
 export function buildUpsertSql(rows: readonly ImportRow[], meta: SqlMeta): string {
   const records = rows.map((r) => ({ ...r, osm_timestamp: meta.osmTimestamp }));
@@ -20,7 +21,7 @@ export function buildUpsertSql(rows: readonly ImportRow[], meta: SqlMeta): strin
 -- OSM data as of: ${oneLine(meta.osmTimestamp ?? 'unknown')}
 -- Rows: ${rows.length}
 -- Data © OpenStreetMap contributors, ODbL.
--- Safe to run more than once: existing rows keep status, imported_at and source.
+-- Safe to run more than once: existing rows keep status, category, imported_at and source.
 begin;
 
 insert into public.venues_import (osm_type, osm_id, tags, lat, lng, category, osm_timestamp)
@@ -38,8 +39,7 @@ on conflict (osm_type, osm_id) do update set
   tags = excluded.tags,
   lat = excluded.lat,
   lng = excluded.lng,
-  category = excluded.category,
-  osm_timestamp = excluded.osm_timestamp,
+  osm_timestamp = coalesce(excluded.osm_timestamp, public.venues_import.osm_timestamp),
   last_seen_at = now();
 
 commit;

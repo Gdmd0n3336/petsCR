@@ -1,7 +1,14 @@
 // Импорт заведений из экспорта Overpass Turbo в SQL для public.venues_import (TASK-03).
 // Запуск: npm run import:osm -- --from-file <export.json> [--out-dir <каталог вне репозитория>]
 // Скрипт не ходит в сеть и не подключается к базе: SQL-файл выполняют вручную в SQL Editor.
-import { existsSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  realpathSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
 import { homedir } from 'node:os';
 import { basename, dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -63,6 +70,10 @@ export function run(argv: string[], io: RunIO): number {
   const inputPath = resolve(fromFile);
   if (!existsSync(inputPath)) {
     io.stderr(`Файл не найден: ${inputPath}`);
+    return 1;
+  }
+  if (!statSync(inputPath).isFile()) {
+    io.stderr(`Указана папка, а не файл: ${inputPath}. ${USAGE}`);
     return 1;
   }
 

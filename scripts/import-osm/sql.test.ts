@@ -34,9 +34,9 @@ describe('buildUpsertSql (text)', () => {
     expect(sql).toMatch(/^commit;$/m);
   });
 
-  it('never updates status, imported_at or source on conflict', () => {
+  it('never updates status, category, imported_at or source on conflict', () => {
     const update = sql.slice(sql.indexOf('do update set'), sql.indexOf('commit;'));
-    expect(update).not.toMatch(/status|imported_at|source/);
+    expect(update).not.toMatch(/status|category|imported_at|source/);
   });
 
   it('keeps header values on comment lines (no line breaks from file names)', () => {
@@ -75,6 +75,27 @@ describe('buildUpsertSql on real Postgres (PGlite) with the venues_import migrat
     expect(find(after, 101)?.status).toBe('approved');
     expect(find(after, 101)?.imported_at).toEqual(find(before, 101)?.imported_at);
     expect(find(after, 201)?.lat).toBe(12.5);
+  }, 30_000);
+
+  it('keeps a category corrected by a human on re-run', async () => {
+    const db = await freshDb();
+    await db.exec(buildUpsertSql(sample.rows, meta));
+    await db.exec("update public.venues_import set category = 'boarding' where osm_id = 102");
+    await db.exec(buildUpsertSql(sample.rows, meta));
+    const row = await db.query<{ category: string }>(
+      'select category from public.venues_import where osm_id = 102',
+    );
+    expect(row.rows[0]?.category).toBe('boarding');
+  }, 30_000);
+
+  it('keeps the saved OSM timestamp when a new file has none', async () => {
+    const db = await freshDb();
+    await db.exec(buildUpsertSql(sample.rows, meta));
+    await db.exec(buildUpsertSql(sample.rows, { ...meta, osmTimestamp: null }));
+    const ts = await db.query<{ ts: Date | null }>(
+      'select min(osm_timestamp) as ts from public.venues_import',
+    );
+    expect(ts.rows[0]?.ts).toEqual(new Date('2026-10-01T00:00:00Z'));
   }, 30_000);
 
   it('stores unsafe tag values byte for byte and executes nothing from them', async () => {

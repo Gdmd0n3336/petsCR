@@ -36,6 +36,12 @@ describe('import-osm CLI', () => {
     expect(r.err).toMatch(/Файл не найден/);
   });
 
+  it('reports a directory given instead of a file in Russian', () => {
+    const r = exec(['--from-file', tmpdir(), '--out-dir', outDir()]);
+    expect(r.code).toBe(1);
+    expect(r.err).toMatch(/папка, а не файл/);
+  });
+
   it('stops on GeoJSON with a clear message and writes nothing', () => {
     const dir = outDir();
     const r = exec(['--from-file', fixture('geojson-sample.json'), '--out-dir', dir]);
