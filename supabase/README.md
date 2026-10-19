@@ -51,3 +51,33 @@ RLS_TEST_RESULT a_sees_own_requests=1 a_sees_b_requests=0 a_messages=1 a_venues=
 | `anon_requests=blocked` | аноним не читает заявки |
 
 Если хотя бы одно значение отличается (например, `ALLOWED` или другое число), политики доступа нарушены: не применяйте новые миграции и разберите причину.
+
+## Импорт заведений из OpenStreetMap (TASK-03)
+
+Скрипт `scripts/import-osm` превращает экспорт Overpass Turbo в SQL для таблицы `public.venues_import` (миграция `*_venues_import.sql`). В сеть он не ходит и к базе не подключается — ключи не нужны.
+
+1. **Миграция.** Применить `supabase/migrations/*_venues_import.sql` (один раз), затем проверить Advisors и перегенерировать типы.
+2. **Экспорт.** В [Overpass Turbo](https://overpass-turbo.eu/) выполнить запрос и сохранить «Экспорт» → «необработанные данные OSM» (raw OSM data, JSON). GeoJSON и XML не подходят — скрипт остановится с ошибкой.
+   ```
+   [out:json][timeout:120];
+   area["ISO3166-2"="TH-20"]->.p;
+   (
+     nwr["amenity"="veterinary"](area.p);
+     nwr["shop"="pet_grooming"](area.p);
+     nwr["amenity"="animal_boarding"](area.p);
+     nwr["shop"="pet"](area.p);
+   );
+   out center tags;
+   ```
+   Один запрос вручную, без повторов подряд: публичный сервер Overpass перегружен и просит не злоупотреблять.
+3. **Скрипт** (Node 22):
+   ```
+   npm run import:osm -- --from-file ~/Downloads/export.json
+   ```
+   По умолчанию результат пишется в `~/lapa-osm-import/` (`--out-dir` — другой каталог; внутрь репозитория скрипт писать отказывается). Получится `venues_import_upsert.sql` и `import-log-<дата>.txt` (оба имени в `.gitignore`); журнал также печатается в консоль: число объектов по категориям, сколько с телефоном, с часами работы, без названия, пропуски и дубли.
+4. **SQL.** Открыть `venues_import_upsert.sql` в SQL Editor и выполнить целиком. В конце запрос покажет число строк по категориям.
+5. **Повторный импорт** безопасен: новые объекты добавятся, у существующих обновятся теги и координаты, а `status` и `category` (решения проверяющего), `imported_at` и `source` не изменятся; дата данных OSM сохраняется, если в новом файле её нет. Проверка вручную: выполнить тот же файл второй раз — число строк не меняется.
+
+Категория выбирается по приоритету: `amenity=veterinary` → `vet_clinic`, затем `amenity=animal_boarding` → `boarding`, `shop=pet_grooming` → `grooming`, `shop=pet` → `pet_shop`. Объекты с несколькими тегами получают одну категорию; исходные теги сохраняются в `tags`. Категория вычисляется только при первом импорте объекта: исправление человека в `venues_import.category` повторный импорт не затирает (если в OSM поменяли теги, категорию правят вручную).
+
+Данные © участники OpenStreetMap, лицензия ODbL. В каждой строке сохраняются `osm_type`, `osm_id`, `source = 'osm'` и время данных OSM (`osm_timestamp`).

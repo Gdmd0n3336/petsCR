@@ -23,7 +23,7 @@ export default tseslint.config(
     rules: {
       ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
-      'import-x/no-cycle': 'error',
+      'import-x/no-cycle': ['error', { ignoreExternal: true }],
     },
   },
   {

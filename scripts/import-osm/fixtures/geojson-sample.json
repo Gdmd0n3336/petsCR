@@ -1,0 +1,10 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "@id": "node/101", "amenity": "veterinary" },
+      "geometry": { "type": "Point", "coordinates": [100.88, 12.93] }
+    }
+  ]
+}

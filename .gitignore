@@ -8,3 +8,7 @@ coverage/
 .env
 .env.*
 !.env.example
+
+# выход scripts/import-osm (данные OSM, в репозиторий не кладём)
+venues_import_upsert.sql
+import-log-*.txt

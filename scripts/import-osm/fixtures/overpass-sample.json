@@ -1,0 +1,79 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API (test fixture, fictional data)",
+  "osm3s": {
+    "timestamp_osm_base": "2026-10-01T00:00:00Z",
+    "copyright": "Fictional test data in the shape of an Overpass API export."
+  },
+  "elements": [
+    {
+      "type": "node",
+      "id": 101,
+      "lat": 12.93,
+      "lon": 100.88,
+      "tags": {
+        "amenity": "veterinary",
+        "name": "Test Vet",
+        "phone": "+66 38 000 001",
+        "opening_hours": "Mo-Su 09:00-20:00"
+      }
+    },
+    {
+      "type": "way",
+      "id": 201,
+      "center": { "lat": 12.94, "lon": 100.89 },
+      "tags": { "shop": "pet_grooming", "name": "Test Grooming", "contact:phone": "+66 81 000 002" }
+    },
+    {
+      "type": "relation",
+      "id": 301,
+      "center": { "lat": 12.95, "lon": 100.9 },
+      "tags": { "amenity": "animal_boarding", "name": "Test Dog Hotel" }
+    },
+    { "type": "node", "id": 102, "lat": 12.96, "lon": 100.91, "tags": { "shop": "pet" } },
+    {
+      "type": "node",
+      "id": 103,
+      "lat": 12.97,
+      "lon": 100.92,
+      "tags": { "amenity": "veterinary", "shop": "pet", "name": "Vet And Shop" }
+    },
+    {
+      "type": "node",
+      "id": 104,
+      "lat": 12.98,
+      "lon": 100.93,
+      "tags": { "amenity": "animal_boarding", "shop": "pet_grooming", "name": "Hotel And Grooming" }
+    },
+    {
+      "type": "relation",
+      "id": 302,
+      "tags": { "amenity": "veterinary", "name": "No Center" }
+    },
+    {
+      "type": "node",
+      "id": 105,
+      "lat": 12.99,
+      "lon": 100.94,
+      "tags": {
+        "shop": "pet",
+        "name": "O'Brien \"Pets\" $$; delete from public.venues_import; -- \\ \n second line",
+        "phone": "+66 38 000 005"
+      }
+    },
+    {
+      "type": "node",
+      "id": 101,
+      "lat": 12.93,
+      "lon": 100.88,
+      "tags": { "amenity": "veterinary", "name": "Test Vet" }
+    },
+    { "type": "node", "id": 106, "lat": 13.0, "lon": 100.95, "tags": { "amenity": "cafe" } },
+    {
+      "type": "way",
+      "id": 202,
+      "center": { "lat": 13.01, "lon": 100.96 },
+      "tags": { "shop": "pet_grooming", "name": "Hours Only", "opening_hours": "Mo-Sa 10:00-18:00" }
+    }
+  ]
+}
