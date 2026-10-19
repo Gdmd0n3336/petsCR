@@ -75,6 +75,17 @@ describe('parseOverpass on the sample file', () => {
   });
 });
 
+describe('parseOverpass tag hygiene', () => {
+  it('drops NUL characters that Postgres jsonb cannot store', () => {
+    const text = JSON.stringify({
+      elements: [
+        { type: 'node', id: 1, lat: 1, lon: 1, tags: { shop: 'pet', 'na\u0000me': 'a\u0000b' } },
+      ],
+    });
+    expect(parseOverpass(text).rows[0]?.tags).toEqual({ shop: 'pet', name: 'ab' });
+  });
+});
+
 describe('parseOverpass format errors (Russian messages)', () => {
   const error = (text: string) => {
     try {

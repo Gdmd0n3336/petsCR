@@ -68,8 +68,10 @@ function coordinates(element: Record<string, unknown>): { lat: number; lng: numb
 function readTags(value: unknown): Tags {
   if (!isObject(value)) return {};
   const tags: Tags = {};
+  // NUL нельзя сохранить в jsonb Postgres: один такой символ уронил бы весь SQL-файл.
+  const clean = (s: string) => s.replaceAll('\u0000', '');
   for (const [key, tag] of Object.entries(value)) {
-    if (typeof tag === 'string') tags[key] = tag;
+    if (typeof tag === 'string') tags[clean(key)] = clean(tag);
   }
   return tags;
 }
