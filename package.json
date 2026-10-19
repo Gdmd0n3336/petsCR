@@ -13,7 +13,8 @@
     "typecheck": "tsc -b --noEmit",
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "import:osm": "node --experimental-strip-types scripts/import-osm/main.ts"
   },
   "dependencies": {
     "@fontsource-variable/manrope": "^5.3.0",
