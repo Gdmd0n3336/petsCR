@@ -1,4 +1,5 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '../types/database.types';
 
 export class SupabaseConfigError extends Error {
   constructor() {
@@ -7,14 +8,14 @@ export class SupabaseConfigError extends Error {
   }
 }
 
-let client: SupabaseClient | undefined;
+let client: SupabaseClient<Database> | undefined;
 
 /** Клиент создаётся при первом использовании, чтобы без .env приложение открывалось. */
-export function getSupabase(): SupabaseClient {
+export function getSupabase(): SupabaseClient<Database> {
   if (client) return client;
   const url = import.meta.env.VITE_SUPABASE_URL;
   const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
   if (!url || !key) throw new SupabaseConfigError();
-  client = createClient(url, key);
+  client = createClient<Database>(url, key);
   return client;
 }

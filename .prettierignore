@@ -5,3 +5,5 @@ package-lock.json
 *.md
 .claude/
 bulletproof-main.zip
+# Сгенерировано `supabase gen types typescript`; не форматируем, чтобы перегенерация давала чистый diff.
+src/types/database.types.ts
