@@ -61,7 +61,7 @@
 ## Phases
 
 ### Phase 1: миграция
-- **Files:** `supabase/migrations/20261019120000_venues_import.sql` (версию переименуем после применения Максом)
+- **Files:** `supabase/migrations/20261019122403_venues_import.sql` (применена Максом, версия 20261019122403)
 - **Changes:** таблица `venues_import` (osm_type, osm_id, tags, lat, lng, category, status, source, osm_timestamp, imported_at, last_seen_at; `primary key (osm_type, osm_id)`; check-ограничения), RLS, `revoke` у `anon`/`authenticated`, `grant all` `service_role`.
 
 ### Phase 2: разбор и категории

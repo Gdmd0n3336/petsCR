@@ -414,6 +414,48 @@ export type Database = {
         }
         Relationships: []
       }
+      venues_import: {
+        Row: {
+          category: string
+          imported_at: string
+          last_seen_at: string
+          lat: number
+          lng: number
+          osm_id: number
+          osm_timestamp: string | null
+          osm_type: string
+          source: string
+          status: string
+          tags: Json
+        }
+        Insert: {
+          category: string
+          imported_at?: string
+          last_seen_at?: string
+          lat: number
+          lng: number
+          osm_id: number
+          osm_timestamp?: string | null
+          osm_type: string
+          source?: string
+          status?: string
+          tags: Json
+        }
+        Update: {
+          category?: string
+          imported_at?: string
+          last_seen_at?: string
+          lat?: number
+          lng?: number
+          osm_id?: number
+          osm_timestamp?: string | null
+          osm_type?: string
+          source?: string
+          status?: string
+          tags?: Json
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
