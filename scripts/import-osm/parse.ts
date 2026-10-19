@@ -68,8 +68,8 @@ function coordinates(element: Record<string, unknown>): { lat: number; lng: numb
 function readTags(value: unknown): Tags {
   if (!isObject(value)) return {};
   const tags: Tags = {};
-  // NUL нельзя сохранить в jsonb Postgres: один такой символ уронил бы весь SQL-файл.
-  const clean = (s: string) => s.replaceAll('\u0000', '');
+  // NUL и непарные суррогаты нельзя сохранить в jsonb Postgres: один такой символ уронил бы весь SQL.
+  const clean = (s: string) => s.replaceAll('\u0000', '').toWellFormed();
   for (const [key, tag] of Object.entries(value)) {
     if (typeof tag === 'string') tags[clean(key)] = clean(tag);
   }
@@ -95,6 +95,12 @@ export function parseOverpass(text: string): ParseResult {
   }
   if (!isObject(data) || !Array.isArray(data.elements)) {
     throw new ImportFormatError(`В файле нет массива «elements». ${EXPECTED}`);
+  }
+  // При таймауте или нехватке памяти Overpass отдаёт неполный список элементов и поле remark.
+  if (typeof data.remark === 'string' && data.remark.trim() !== '') {
+    throw new ImportFormatError(
+      `Overpass вернул неполный ответ: «${data.remark.trim()}». Повторите запрос в Overpass Turbo позже и сохраните экспорт заново.`,
+    );
   }
 
   const stats: ParseStats = {
@@ -149,6 +155,11 @@ export function parseOverpass(text: string): ParseResult {
   const osm3s = isObject(data.osm3s) ? data.osm3s : {};
   const osmTimestamp =
     typeof osm3s.timestamp_osm_base === 'string' ? osm3s.timestamp_osm_base : null;
+  if (osmTimestamp !== null && !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(osmTimestamp)) {
+    throw new ImportFormatError(
+      `Поле osm3s.timestamp_osm_base «${osmTimestamp}» не похоже на дату Overpass (ожидается 2026-10-19T09:37:02Z). ${EXPECTED}`,
+    );
+  }
 
   return { rows, osmTimestamp, stats };
 }

@@ -22,7 +22,6 @@ export function buildUpsertSql(rows: readonly ImportRow[], meta: SqlMeta): strin
 -- Data © OpenStreetMap contributors, ODbL.
 -- Safe to run more than once: existing rows keep status, imported_at and source.
 begin;
-set local standard_conforming_strings = on;
 
 insert into public.venues_import (osm_type, osm_id, tags, lat, lng, category, osm_timestamp)
 select r.osm_type, r.osm_id, r.tags, r.lat, r.lng, r.category, r.osm_timestamp

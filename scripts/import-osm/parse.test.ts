@@ -84,6 +84,12 @@ describe('parseOverpass tag hygiene', () => {
     });
     expect(parseOverpass(text).rows[0]?.tags).toEqual({ shop: 'pet', name: 'ab' });
   });
+
+  it('replaces lone surrogates that Postgres jsonb rejects', () => {
+    const text =
+      '{"elements": [{"type": "node", "id": 1, "lat": 1, "lon": 1, "tags": {"shop": "pet", "name": "a\\ud800b"}}]}';
+    expect(parseOverpass(text).rows[0]?.tags.name).toBe('a\uFFFDb');
+  });
 });
 
 describe('parseOverpass format errors (Russian messages)', () => {
@@ -112,6 +118,20 @@ describe('parseOverpass format errors (Russian messages)', () => {
   it('rejects JSON without elements', () => {
     expect(error('{"version": 0.6}')).toMatch(/elements/);
     expect(error('[1, 2]')).toMatch(/elements/);
+  });
+
+  it('rejects an incomplete Overpass answer (remark with runtime error)', () => {
+    const text = JSON.stringify({
+      remark: 'runtime error: Query timed out in "query" at line 3 after 120 seconds.',
+      elements: [{ type: 'node', id: 1, lat: 1, lon: 1, tags: { shop: 'pet' } }],
+    });
+    expect(error(text)).toMatch(/неполный ответ.*Query timed out/s);
+  });
+
+  it('rejects an OSM timestamp that is not an ISO date', () => {
+    expect(error('{"osm3s": {"timestamp_osm_base": "garbage"}, "elements": []}')).toMatch(
+      /timestamp_osm_base/,
+    );
   });
 
   it('rejects an element with a wrong type or id', () => {

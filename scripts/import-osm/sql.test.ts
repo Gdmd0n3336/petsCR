@@ -32,7 +32,6 @@ describe('buildUpsertSql (text)', () => {
     expect(sql.match(/jsonb_to_recordset\(/g)).toHaveLength(1);
     expect(sql).toMatch(/^begin;$/m);
     expect(sql).toMatch(/^commit;$/m);
-    expect(sql).toContain('set local standard_conforming_strings = on;');
   });
 
   it('never updates status, imported_at or source on conflict', () => {
@@ -92,6 +91,10 @@ describe('buildUpsertSql on real Postgres (PGlite) with the venues_import migrat
 
   it('is closed for anon and authenticated (RLS + no grants)', async () => {
     const db = await freshDb();
+    const rls = await db.query<{ on: boolean }>(
+      "select relrowsecurity as on from pg_class where relname = 'venues_import'",
+    );
+    expect(rls.rows[0]?.on).toBe(true);
     await db.exec(buildUpsertSql(sample.rows, meta));
     for (const role of ['anon', 'authenticated']) {
       await expect(
