@@ -1,7 +1,7 @@
 # Plan: TASK-03 импорт заведений из OpenStreetMap
 **Spec:** specs/2026-10-19-task-03-osm-import.md
 **Research:** thoughts/research/2026-10-19-task-03-osm-import.md
-**Status:** in_progress
+**Status:** in_progress (фазы 1–5 и этапы 8–10 пройдены; ждёт решения Макса по находке ревью №2 и версии миграции)
 **Branch:** `feature/task-03-osm-import`. PR — только по команде Макса.
 
 ## Как это работает
@@ -87,3 +87,5 @@
 |------|-------|---------|
 | 2026-10-19 | plan | первая версия плана |
 | 2026-10-19 | plan v2 | решения Макса: вариант A, без сети (только `--from-file`), PGlite 0.5.10, `source`/`osm_timestamp` |
+| 2026-10-19 | 1–5 | миграция (8fe3cee), разбор (8fe3cee), SQL + PGlite (f24bad0, 695f880), CLI (a57014b), README (496f27e) |
+| 2026-10-19 | 8–10 | проверки, реальный файл Макса (51 объект), ревью свежим контекстом, /security-review — уязвимостей нет; правки доказанных ошибок ревью (872c956): remark, суррогаты, timestamp, set local; CI 23 с (npm test 6 с) |
