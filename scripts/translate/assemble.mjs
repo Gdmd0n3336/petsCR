@@ -34,11 +34,26 @@ for (const row of outRows) {
 }
 
 // ---- Проверка 1: строки ----
+// Перевод на язык оригинала (need_* = false) не ошибка: при сборке он просто пропускается.
+const SKIPPED_EXTRA = 'должен быть пустым';
 const extraIds = [...outById.keys()].filter((id) => !inputById.has(id));
 const rowFailures = [];
+const skippedExtra = [];
 for (const row of input) {
-  const problems = rowProblems(row, outById.get(row.id));
+  const all = rowProblems(row, outById.get(row.id));
+  for (const p of all.filter((p) => p.includes(SKIPPED_EXTRA)))
+    skippedExtra.push({ id: row.id, p });
+  const problems = all.filter((p) => !p.includes(SKIPPED_EXTRA));
   if (problems.length) rowFailures.push({ id: row.id, problems });
+}
+
+// Тексты без букв (только эмодзи, цифры, знаки) копируются как есть.
+const noLetters = (text) => (text.match(/\p{L}/gu) ?? []).length === 0;
+const noLetterChanged = [];
+for (const row of input.filter((r) => noLetters(r.text))) {
+  const o = outById.get(row.id) ?? {};
+  if (row.need_ru && o.text_ru !== row.text) noLetterChanged.push({ id: row.id, lang: 'ru' });
+  if (row.need_en && o.text_en !== row.text) noLetterChanged.push({ id: row.id, lang: 'en' });
 }
 const check1 = {
   input: input.length,
@@ -48,6 +63,9 @@ const check1 = {
   needRu: input.filter((r) => r.need_ru).length,
   needEn: input.filter((r) => r.need_en).length,
   failures: rowFailures.filter((f) => f.problems.some((p) => !p.includes('80%'))),
+  skippedExtraTranslations: skippedExtra.length,
+  noLetterTexts: input.filter((r) => noLetters(r.text)).length,
+  noLetterChanged,
   sourceUrl:
     'source_url берётся из входа по id: переводчики его не копируют, поэтому совпадает всегда',
 };
