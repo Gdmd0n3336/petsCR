@@ -8,3 +8,6 @@ coverage/
 .env
 .env.*
 !.env.example
+
+# данные TASK-T (переводы, пакеты) — в репозиторий не кладём
+/data/
