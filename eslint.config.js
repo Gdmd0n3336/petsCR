@@ -8,7 +8,10 @@ import tseslint from 'typescript-eslint';
 const useRuStrings = 'Строки интерфейса берите из src/i18n/ru.ts.';
 
 export default tseslint.config(
-  { ignores: ['dist', 'coverage', '.claude', 'src/test/fixtures'] },
+  // scripts/translate/workflow.js — сценарий инструмента Workflow Claude Code (return на верхнем уровне), не модуль Node
+  {
+    ignores: ['dist', 'coverage', '.claude', 'src/test/fixtures', 'scripts/translate/workflow.js'],
+  },
   {
     files: ['**/*.{ts,tsx}'],
     extends: [js.configs.recommended, ...tseslint.configs.recommended],

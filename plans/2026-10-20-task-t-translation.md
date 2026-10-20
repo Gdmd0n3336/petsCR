@@ -1,6 +1,6 @@
 # Plan: TASK-T перевод отзывов и названий заведений (RU, EN)
 **Spec:** задача Макса `TASK-translation.md` (вложение 2026-10-20), критерии приёмки — оттуда дословно.
-**Status:** in_progress · **Branch:** `feature/task-t-translation` · этапы 1–10 подряд (решение Макса)
+**Status:** paused (частичный результат, решение Макса 2026-10-20; см. progress/task-t-handoff.md) · **Branch:** `feature/task-t-translation` · этапы 1–10 подряд (решение Макса)
 
 ## Исследование (этап 1, кратко)
 - Вход: 3 862 отзыва, 413 517 знаков; языки: th 3 504, en 281, ru 28, прочие 49 (de, zh, ja, fr, ko, it, es, nl, kri). need_ru 3 834, need_en 3 581. Оценки: 1★ 300, 2★ 37, 3★ 68, 4★ 229, 5★ 3 228.
