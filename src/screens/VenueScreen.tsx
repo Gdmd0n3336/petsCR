@@ -6,9 +6,8 @@ import { ReviewList } from '../components/ReviewList';
 import { ScreenState } from '../components/ScreenState';
 import { SoonDialog } from '../components/SoonDialog';
 import { useI18n } from '../i18n/context';
-import { districtName } from '../i18n/locale';
 import { useVenues } from '../lib/catalog/context';
-import { venueName } from '../lib/catalog/names';
+import { areaName, venueName } from '../lib/catalog/names';
 import { directionsUrl, telHref, telegramShareUrl, venueShareTarget } from '../lib/links';
 
 export function VenueScreen({ id, onBack }: { id: string; onBack: () => void }) {
@@ -34,10 +33,7 @@ export function VenueScreen({ id, onBack }: { id: string; onBack: () => void }) 
   }
 
   const name = venueName(venue, lang);
-  const meta = [
-    t.venue.category[venue.category],
-    venue.district && districtName(venue.district, lang),
-  ]
+  const meta = [t.venue.category[venue.category], areaName(venue, lang)]
     .filter(Boolean)
     .join(' · ');
 

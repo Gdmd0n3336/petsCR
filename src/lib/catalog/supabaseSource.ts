@@ -11,7 +11,7 @@ import {
 
 // Только нужные колонки (TASK-06, раздел «Данные»); is_demo — для пометки демо-записей (CLAUDE.md).
 export const VENUE_COLUMNS =
-  'id, category, name_ru, name_en, name_th, district, lat, lng, phone, website, opening_hours, is_24_7, address, google_rating, google_reviews_count, google_place_id, is_demo';
+  'id, category, name_ru, name_en, name_th, area_ru, area_en, lat, lng, phone, website, opening_hours, is_24_7, address, google_rating, google_reviews_count, google_place_id, is_demo';
 export const REVIEW_COLUMNS =
   'id, venue_id, author_display, rating_overall, text, text_lang, review_date, price_paid, text_ru, text_en, needs_ru, needs_en, is_demo';
 export const STATS_COLUMNS = 'venue_id, reviews_count, avg_rating';

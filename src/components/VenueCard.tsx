@@ -1,16 +1,13 @@
 import { Link } from 'wouter';
 import { useI18n } from '../i18n/context';
-import { districtName, formatNumber, formatRating } from '../i18n/locale';
+import { formatNumber, formatRating } from '../i18n/locale';
 import type { VenueListItem } from '../lib/catalog/filters';
-import { venueName } from '../lib/catalog/names';
+import { areaName, venueName } from '../lib/catalog/names';
 import { telHref } from '../lib/links';
 
 export function VenueCard({ venue }: { venue: VenueListItem }) {
   const { t, lang } = useI18n();
-  const meta = [
-    t.venue.category[venue.category],
-    venue.district && districtName(venue.district, lang),
-  ]
+  const meta = [t.venue.category[venue.category], areaName(venue, lang)]
     .filter(Boolean)
     .join(' · ');
   const google =

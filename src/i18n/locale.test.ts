@@ -1,7 +1,6 @@
 import { en } from './en';
 import {
   detectLang,
-  districtName,
   formatDate,
   formatRating,
   initialLang,
@@ -44,14 +43,11 @@ describe('locale', () => {
     expect(keysOf(en).sort()).toEqual(keysOf(ru).sort());
   });
 
-  it('formats ratings, dates and districts per language', () => {
+  it('formats ratings and dates per language', () => {
     expect(formatRating(4.6, 'ru')).toBe('4,6');
     expect(formatRating(5, 'en')).toBe('5.0');
     expect(formatDate('2026-10-03', 'ru')).toBe('3 октября 2026 г.');
     expect(formatDate('2026-10-03', 'en')).toBe('3 October 2026');
-    expect(districtName('Сирача', 'en')).toBe('Si Racha');
-    expect(districtName('Неизвестный', 'en')).toBe('Неизвестный');
-    expect(districtName('Сирача', 'ru')).toBe('Сирача');
   });
 
   it('uses Russian plural forms', () => {

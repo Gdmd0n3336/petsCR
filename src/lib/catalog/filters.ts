@@ -1,5 +1,5 @@
 import { distanceKm, type LatLng } from '../geo';
-import { matchesName } from '../search';
+import { matchesArea, matchesName } from '../search';
 import type { Venue } from './types';
 
 export type CatalogSort = 'google_rating' | 'reviews_count' | 'distance';
@@ -8,8 +8,8 @@ export type CatalogFilters = {
   query: string;
   only24: boolean;
   withPhone: boolean;
-  /** null — все районы. */
-  district: string | null;
+  /** area_ru выбранного района; null — все районы. */
+  area: string | null;
   sort: CatalogSort;
 };
 
@@ -17,7 +17,7 @@ export const DEFAULT_FILTERS: CatalogFilters = {
   query: '',
   only24: false,
   withPhone: false,
-  district: null,
+  area: null,
   sort: 'google_rating',
 };
 
@@ -50,8 +50,9 @@ export function applyFilters(
       (v) =>
         (!filters.only24 || v.is_24_7) &&
         (!filters.withPhone || Boolean(v.phone)) &&
-        (filters.district === null || v.district === filters.district) &&
-        matchesName([v.name_ru, v.name_en, v.name_th], filters.query),
+        (filters.area === null || v.area_ru === filters.area) &&
+        (matchesName([v.name_ru, v.name_en, v.name_th], filters.query) ||
+          matchesArea([v.area_ru, v.area_en], filters.query)),
     )
     .map((v) => ({
       ...v,
@@ -63,17 +64,22 @@ export function applyFilters(
     .sort(compare(sort));
 }
 
-export function districtsOf(venues: readonly Venue[]): string[] {
-  return [...new Set(venues.map((v) => v.district).filter((d): d is string => Boolean(d)))].sort(
-    (a, b) => a.localeCompare(b, 'ru'),
-  );
+export type AreaOption = { value: string; ru: string; en: string | null };
+
+/** Районы для фильтра: значение — area_ru, подписи — area_ru / area_en из базы. */
+export function areasOf(venues: readonly Venue[]): AreaOption[] {
+  const areas = new Map<string, AreaOption>();
+  for (const v of venues) {
+    if (!v.area_ru) continue;
+    const known = areas.get(v.area_ru);
+    if (!known || (!known.en && v.area_en))
+      areas.set(v.area_ru, { value: v.area_ru, ru: v.area_ru, en: v.area_en });
+  }
+  return [...areas.values()].sort((a, b) => a.ru.localeCompare(b.ru, 'ru'));
 }
 
 export function isFiltered(filters: CatalogFilters): boolean {
   return (
-    Boolean(filters.query.trim()) ||
-    filters.only24 ||
-    filters.withPhone ||
-    filters.district !== null
+    Boolean(filters.query.trim()) || filters.only24 || filters.withPhone || filters.area !== null
   );
 }

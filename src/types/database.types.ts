@@ -1,5 +1,6 @@
-// Обновлено вручную по схеме 20261020140247_google_data_fields_and_import_staging (TASK-06):
-// поля Google и переводов в venues/reviews, представление venue_review_stats.
+// Обновлено вручную по схемам 20261020140247_google_data_fields_and_import_staging и
+// 20261021090011_venues_area_labels (TASK-06): поля Google, переводов и района (area_ru/area_en)
+// в venues/reviews, представление venue_review_stats.
 // needs_ru/needs_en генерируются базой, поэтому их нет в Insert/Update.
 // Перегенерировать (supabase gen types), когда будет доступ к проекту.
 export type Json =
@@ -348,6 +349,8 @@ export type Database = {
       venues: {
         Row: {
           address: string | null
+          area_en: string | null
+          area_ru: string | null
           category: string
           category_raw: string | null
           coords_verified_at: string | null
@@ -379,6 +382,8 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          area_en?: string | null
+          area_ru?: string | null
           category: string
           category_raw?: string | null
           coords_verified_at?: string | null
@@ -410,6 +415,8 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          area_en?: string | null
+          area_ru?: string | null
           category?: string
           category_raw?: string | null
           coords_verified_at?: string | null

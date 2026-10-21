@@ -1,12 +1,11 @@
 import { useI18n } from '../i18n/context';
-import { districtName } from '../i18n/locale';
-import type { CatalogFilters, CatalogSort } from '../lib/catalog/filters';
+import type { AreaOption, CatalogFilters, CatalogSort } from '../lib/catalog/filters';
 import type { GeoStatus } from '../lib/useGeolocation';
 
 type Props = {
   filters: CatalogFilters;
   onChange: (filters: CatalogFilters) => void;
-  districts: string[];
+  areas: AreaOption[];
   geoStatus: GeoStatus;
   onRequestLocation: () => void;
 };
@@ -14,7 +13,7 @@ type Props = {
 export function CatalogFilterBar({
   filters,
   onChange,
-  districts,
+  areas,
   geoStatus,
   onRequestLocation,
 }: Props) {
@@ -61,13 +60,13 @@ export function CatalogFilterBar({
         <label className="select">
           <span className="visually-hidden">{t.catalog.district}</span>
           <select
-            value={filters.district ?? ''}
-            onChange={(e) => set({ district: e.target.value || null })}
+            value={filters.area ?? ''}
+            onChange={(e) => set({ area: e.target.value || null })}
           >
             <option value="">{t.catalog.allDistricts}</option>
-            {districts.map((d) => (
-              <option key={d} value={d}>
-                {districtName(d, lang)}
+            {areas.map((a) => (
+              <option key={a.value} value={a.value}>
+                {(lang === 'en' ? a.en : null) ?? a.ru}
               </option>
             ))}
           </select>

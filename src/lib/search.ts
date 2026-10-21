@@ -60,6 +60,20 @@ export function skeleton(latin: string): string {
     .replace(/(.)\1+/g, '$1');
 }
 
+/**
+ * Район: подстрока или совпадение «скелета» целиком (Sriracha / Sri Racha → Si Racha, Сирача).
+ * Целиком и от 5 букв — чтобы короткие запросы вроде «pet» не находили всю «Pattaya».
+ */
+export function matchesArea(areas: readonly (string | null)[], query: string): boolean {
+  const q = latinize(query);
+  if (!q) return true;
+  return areas.some((area) => {
+    if (!area) return false;
+    const a = latinize(area);
+    return a.includes(q) || (q.length >= 5 && skeleton(a) === skeleton(q));
+  });
+}
+
 export function matchesName(names: readonly (string | null)[], query: string): boolean {
   const q = latinize(query);
   if (!q) return true;

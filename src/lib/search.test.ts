@@ -1,4 +1,4 @@
-import { latinize, matchesName, skeleton } from './search';
+import { latinize, matchesArea, matchesName, skeleton } from './search';
 
 describe('search by name', () => {
   it('finds Latin by Cyrillic transliteration and back', () => {
@@ -27,5 +27,29 @@ describe('search by name', () => {
   it('builds the latin skeleton', () => {
     expect(latinize('Бэй Вет')).toBe('beyvet');
     expect(skeleton('bayvet')).toBe(skeleton('beyvet'));
+  });
+});
+
+describe('search by area', () => {
+  const siRacha = ['Сирача', 'Si Racha'];
+  const bangSaen = ['Бангсаен', 'Bang Saen'];
+
+  it('finds Si Racha by Sriracha and Sri Racha', () => {
+    expect(matchesArea(siRacha, 'Sriracha')).toBe(true);
+    expect(matchesArea(siRacha, 'Sri Racha')).toBe(true);
+    expect(matchesArea(siRacha, 'сирача')).toBe(true);
+    expect(matchesArea(['Сирача', null], 'Sriracha')).toBe(true);
+  });
+
+  it('finds Bang Saen by Bangsaen', () => {
+    expect(matchesArea(bangSaen, 'Bangsaen')).toBe(true);
+    expect(matchesArea(['Бангсаен', null], 'Bangsaen')).toBe(true);
+    expect(matchesArea(bangSaen, 'Бангсаен')).toBe(true);
+  });
+
+  it('does not match short or unrelated queries by sound', () => {
+    expect(matchesArea(['Паттайя', 'Pattaya'], 'pet')).toBe(false);
+    expect(matchesArea(siRacha, 'Bangsaen')).toBe(false);
+    expect(matchesArea([null], 'Sriracha')).toBe(false);
   });
 });

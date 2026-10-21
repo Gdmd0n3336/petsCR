@@ -42,8 +42,8 @@ export const en: Messages = {
     filtersLabel: 'Filters',
     only24: 'Open 24/7',
     withPhone: 'Has phone',
-    district: 'District',
-    allDistricts: 'All districts',
+    district: 'Area',
+    allDistricts: 'All areas',
     sortLabel: 'Sort',
     sort: {
       google_rating: 'By Google rating',
@@ -114,26 +114,4 @@ export const en: Messages = {
     anonymous: 'Anonymous',
     price: (amount: string) => `Price: ${amount}`,
   },
-};
-
-/** Районы хранятся в базе по-русски; для английского интерфейса — перевод, иначе как есть. */
-export const DISTRICTS_EN: Readonly<Record<string, string>> = {
-  Паттайя: 'Pattaya',
-  Джомтьен: 'Jomtien',
-  Наклуа: 'Naklua',
-  Пратамнак: 'Pratumnak',
-  Бангламунг: 'Bang Lamung',
-  'Банг Ламунг': 'Bang Lamung',
-  Сатахип: 'Sattahip',
-  Сирача: 'Si Racha',
-  'Банг Пхра': 'Bang Phra',
-  Чонбури: 'Chonburi',
-  'Банг Саен': 'Bang Saen',
-  'Бан Бынг': 'Ban Bueng',
-  'Пханат Никхом': 'Phanat Nikhom',
-  'Пхан Тхонг': 'Phan Thong',
-  'Ко Сичанг': 'Ko Sichang',
-  'Нонг Яй': 'Nong Yai',
-  'Бо Тхонг': 'Bo Thong',
-  'Ко Чан': 'Ko Chan',
 };

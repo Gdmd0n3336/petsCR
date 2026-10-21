@@ -1,6 +1,6 @@
 import { makeVenue } from '../../test/catalogSample';
 import { PATTAYA } from '../geo';
-import { DEFAULT_FILTERS, applyFilters, districtsOf, isFiltered } from './filters';
+import { DEFAULT_FILTERS, applyFilters, areasOf, isFiltered } from './filters';
 
 const venues = [
   makeVenue({
@@ -10,7 +10,8 @@ const venues = [
     google_reviews_count: 700,
     is_24_7: true,
     phone: '+66 1',
-    district: 'Паттайя',
+    area_ru: 'Паттайя',
+    area_en: 'Pattaya',
     lat: 12.93,
     lng: 100.88,
   }),
@@ -19,7 +20,8 @@ const venues = [
     name_en: 'Beta Pet',
     google_rating: 4.9,
     google_reviews_count: 12,
-    district: 'Сирача',
+    area_ru: 'Сирача',
+    area_en: 'Si Racha',
     lat: 13.17,
     lng: 100.93,
   }),
@@ -29,7 +31,8 @@ const venues = [
     google_rating: null,
     google_reviews_count: 3,
     phone: '+66 2',
-    district: 'Сирача',
+    area_ru: 'Сирача',
+    area_en: null,
     lat: null,
     lng: null,
   }),
@@ -38,7 +41,8 @@ const venues = [
     name_en: 'Delta Hospital',
     google_rating: 4.9,
     google_reviews_count: 200,
-    district: null,
+    area_ru: null,
+    area_en: null,
     lat: 12.6,
     lng: 100.9,
   }),
@@ -48,11 +52,11 @@ const ids = (filters = {}, position = null as typeof PATTAYA | null) =>
 
 describe('catalog filters', () => {
   it('filters 24/7', () => expect(ids({ only24: true })).toEqual(['a']));
-  it('filters by district', () => expect(ids({ district: 'Сирача' })).toEqual(['b', 'c']));
+  it('filters by area', () => expect(ids({ area: 'Сирача' })).toEqual(['b', 'c']));
   it('filters venues with a phone', () =>
     expect(ids({ withPhone: true }).sort()).toEqual(['a', 'c']));
   it('searches by name', () => expect(ids({ query: 'бета' })).toEqual(['b']));
-  it('combines filters', () => expect(ids({ withPhone: true, district: 'Сирача' })).toEqual(['c']));
+  it('combines filters', () => expect(ids({ withPhone: true, area: 'Сирача' })).toEqual(['c']));
 
   it('sorts by Google rating, ties by review count, no rating last', () => {
     expect(ids()).toEqual(['d', 'b', 'a', 'c']);
@@ -68,8 +72,17 @@ describe('catalog filters', () => {
     expect(applyFilters(venues, DEFAULT_FILTERS, null)[0]?.distanceKm).toBeNull();
   });
 
-  it('lists districts once, sorted', () => {
-    expect(districtsOf(venues)).toEqual(['Паттайя', 'Сирача']);
+  it('lists areas once, sorted, with the English label from the database', () => {
+    expect(areasOf(venues)).toEqual([
+      { value: 'Паттайя', ru: 'Паттайя', en: 'Pattaya' },
+      { value: 'Сирача', ru: 'Сирача', en: 'Si Racha' },
+    ]);
+  });
+
+  it('finds venues by area aliases', () => {
+    expect(ids({ query: 'Sriracha' })).toEqual(['b', 'c']);
+    expect(ids({ query: 'Sri Racha' })).toEqual(['b', 'c']);
+    expect(ids({ query: 'Сирача' })).toEqual(['b', 'c']);
   });
 
   it('knows when filters are active', () => {

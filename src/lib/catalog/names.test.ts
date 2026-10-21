@@ -1,4 +1,4 @@
-import { venueName } from './names';
+import { areaName, venueName } from './names';
 
 describe('venueName (rule 1)', () => {
   const full = { name_ru: 'Ветклиника', name_en: 'Vet Clinic', name_th: 'คลินิก' };
@@ -10,5 +10,14 @@ describe('venueName (rule 1)', () => {
     expect(venueName({ ...full, name_ru: null }, 'ru')).toBe('คลินิก');
     expect(venueName({ ...full, name_en: null }, 'en')).toBe('คลินิก');
     expect(venueName({ name_ru: null, name_en: 'Vet', name_th: null }, 'ru')).toBe('Vet');
+  });
+});
+
+describe('areaName', () => {
+  it('uses area_en in English and falls back to area_ru without errors', () => {
+    expect(areaName({ area_ru: 'Сирача', area_en: 'Si Racha' }, 'en')).toBe('Si Racha');
+    expect(areaName({ area_ru: 'Сирача', area_en: 'Si Racha' }, 'ru')).toBe('Сирача');
+    expect(areaName({ area_ru: 'Бангсаен', area_en: null }, 'en')).toBe('Бангсаен');
+    expect(areaName({ area_ru: null, area_en: null }, 'en')).toBeNull();
   });
 });

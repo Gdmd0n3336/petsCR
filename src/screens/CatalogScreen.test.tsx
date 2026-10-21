@@ -17,7 +17,8 @@ const venues = [
     google_reviews_count: 707,
     is_24_7: true,
     phone: '+66 38 773 007',
-    district: 'Паттайя',
+    area_ru: 'Паттайя',
+    area_en: 'Pattaya',
   }),
   makeVenue({
     id: 'b',
@@ -25,7 +26,8 @@ const venues = [
     name_en: 'Pet Friends',
     google_rating: 4.9,
     google_reviews_count: 12,
-    district: 'Сирача',
+    area_ru: 'Сирача',
+    area_en: 'Si Racha',
     is_demo: true,
   }),
 ];

@@ -6,7 +6,7 @@ import { useVenues } from '../lib/catalog/context';
 import {
   DEFAULT_FILTERS,
   applyFilters,
-  districtsOf,
+  areasOf,
   isFiltered,
   type CatalogFilters,
 } from '../lib/catalog/filters';
@@ -33,7 +33,7 @@ export function CatalogScreen({ filters, onFiltersChange, geo }: Props) {
       <CatalogFilterBar
         filters={filters}
         onChange={onFiltersChange}
-        districts={districtsOf(venues)}
+        areas={areasOf(venues)}
         geoStatus={geo.status}
         onRequestLocation={() => {
           geo.request();

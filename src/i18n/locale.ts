@@ -1,4 +1,4 @@
-import { DISTRICTS_EN, en } from './en';
+import { en } from './en';
 import { ru, type Messages } from './ru';
 
 export type Lang = 'ru' | 'en';
@@ -59,8 +59,4 @@ export function formatDate(isoDate: string, lang: Lang): string {
     year: 'numeric',
     timeZone: 'UTC',
   }).format(new Date(Date.UTC(y, m - 1, d)));
-}
-
-export function districtName(district: string, lang: Lang): string {
-  return lang === 'en' ? (DISTRICTS_EN[district] ?? district) : district;
 }
