@@ -3,6 +3,7 @@ import { matchesArea, matchesName } from '../search';
 import type { Venue } from './types';
 
 export type CatalogSort = 'google_rating' | 'reviews_count' | 'distance';
+export type CatalogView = 'list' | 'map';
 
 export type CatalogFilters = {
   query: string;
@@ -11,6 +12,8 @@ export type CatalogFilters = {
   /** area_ru выбранного района; null — все районы. */
   area: string | null;
   sort: CatalogSort;
+  /** Вид каталога: список или карта (не фильтр, но живёт рядом, чтобы сохраняться при переходах). */
+  view: CatalogView;
 };
 
 export const DEFAULT_FILTERS: CatalogFilters = {
@@ -19,6 +22,7 @@ export const DEFAULT_FILTERS: CatalogFilters = {
   withPhone: false,
   area: null,
   sort: 'google_rating',
+  view: 'list',
 };
 
 export type VenueListItem = Venue & { distanceKm: number | null };

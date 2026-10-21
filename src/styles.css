@@ -605,3 +605,113 @@ body {
     max-width: 760px;
   }
 }
+
+/* Карта */
+.segmented--wide {
+  display: flex;
+}
+
+.segmented--wide .segmented__item {
+  flex: 1;
+  min-height: var(--tap-min);
+}
+
+.venue-map {
+  position: relative;
+  height: min(62dvh, 560px);
+  min-height: 360px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: #e9e7e1;
+}
+
+.venue-map__canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.venue-map__loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.venue-map__near {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  box-shadow: 0 2px 8px rgb(21 23 26 / 15%);
+  background: var(--color-card);
+}
+
+.venue-map__missing {
+  position: absolute;
+  top: 64px;
+  left: 12px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: rgb(255 255 255 / 90%);
+  font-size: 12px;
+}
+
+.map-cluster {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 8px;
+  border: 3px solid #fff;
+  border-radius: 999px;
+  background: var(--color-primary);
+  box-shadow: 0 0 0 4px rgb(11 107 88 / 25%);
+  color: #fff;
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.map-you {
+  width: 16px;
+  height: 16px;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: #1a73e8;
+  box-shadow: 0 0 0 4px rgb(26 115 232 / 25%);
+}
+
+.map-preview {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  left: 10px;
+  padding-right: 48px;
+  box-shadow: 0 6px 20px rgb(21 23 26 / 18%);
+}
+
+.map-preview__close {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: var(--tap-min);
+  height: var(--tap-min);
+  border: 0;
+  background: none;
+  color: var(--color-text-secondary);
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.map-fallback {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px dashed var(--color-border);
+  border-radius: 12px;
+  background: var(--color-card);
+  color: var(--color-text-secondary);
+}

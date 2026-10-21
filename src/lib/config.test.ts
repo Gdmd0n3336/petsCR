@@ -23,3 +23,14 @@ describe('readConfig', () => {
     expect(readConfig({ VITE_GOOGLE_MAPS_API_KEY: '  ' }).mapsApiKey).toBeNull();
   });
 });
+
+describe('test environment', () => {
+  it('runs without the developer keys from the shell (vite.config test.env)', () => {
+    expect(readConfig()).toEqual({
+      supabase: null,
+      mapsApiKey: null,
+      mapsMapId: 'DEMO_MAP_ID',
+      publicBaseUrl: null,
+    });
+  });
+});
