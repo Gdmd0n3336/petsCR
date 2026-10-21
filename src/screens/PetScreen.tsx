@@ -1,13 +1,14 @@
 import { ScreenState } from '../components/ScreenState';
-import { ru } from '../i18n/ru';
+import { useI18n } from '../i18n/context';
 import type { ScreenProps } from './types';
 
 export function PetScreen({ status = 'empty', onRetry }: ScreenProps) {
+  const { t } = useI18n();
   return (
     <ScreenState
       status={status}
-      badge={ru.state.soon}
-      message={status === 'empty' ? ru.screens.pet.empty : undefined}
+      badge={t.state.soon}
+      message={status === 'empty' ? t.screens.pet.empty : undefined}
       onRetry={onRetry}
     />
   );

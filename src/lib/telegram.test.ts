@@ -61,3 +61,11 @@ describe('initTelegram', () => {
     expect(logged).not.toContain('auth_date');
   });
 });
+
+describe('openInTelegram', () => {
+  it('returns false outside Telegram so the regular link opens', async () => {
+    const { openInTelegram } = await loadTelegram();
+    expect(openInTelegram('https://www.google.com/maps/dir/?api=1')).toBe(false);
+    expect(openInTelegram('https://t.me/share/url?url=x')).toBe(false);
+  });
+});

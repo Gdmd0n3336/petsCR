@@ -1,13 +1,14 @@
 import { ScreenState } from '../components/ScreenState';
-import { ru } from '../i18n/ru';
+import { useI18n } from '../i18n/context';
 import type { ScreenProps } from './types';
 
 export function ShopScreen({ status = 'empty', onRetry }: ScreenProps) {
+  const { t } = useI18n();
   return (
     <ScreenState
       status={status}
-      badge={ru.state.soon}
-      message={status === 'empty' ? ru.screens.shop.empty : undefined}
+      badge={t.state.soon}
+      message={status === 'empty' ? t.screens.shop.empty : undefined}
       onRetry={onRetry}
     />
   );

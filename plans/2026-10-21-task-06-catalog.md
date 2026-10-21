@@ -78,3 +78,27 @@ Context7: `/googlemaps/js-api-loader`, `/googlemaps/js-markerclusterer`, `/websi
 4. В репозитории нет миграции с `needs_ru`/`needs_en` и `reviews_translation_queue` (в `20261020140247_…` их нет). Пришлёшь файл?
 5. Разрешаешь зависимости из списка выше?
 6. Доступ к базе: добавить `fyvsfeiplqqaliqichye.supabase.co` в Allowed domains среды и задать `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` в переменных среды — тогда проверю режим базы вживую.
+
+## Решения владельца (2026-10-21) и выбор зависимостей
+| Вопрос | Решение |
+|---|---|
+| Map ID | `VITE_GOOGLE_MAPS_MAP_ID`, пусто → `DEMO_MAP_ID`. Справочник Google (Map class → Constants): `DEMO_MAP_ID` «not intended for use in production applications» → владельцу завести свой Map ID (инструкция в отчёте). |
+| Ключ карты | В коде и CI-сборке без переменных ключа нет: `scripts/check-bundle.mjs` ищет `AIza…` и адрес Supabase в `dist/`, шаг CI `check:bundle`. Боевой ключ защищает владелец: домены, только Maps JavaScript API, дневная квота. |
+| «Поделиться» | `VITE_PUBLIC_BASE_URL` (пусто → текущий адрес); `venueShareTarget()` — точка расширения для `t.me/<bot>/<app>?startapp=venue_<id>`. |
+| Геолокация | Мягкий отказ: ошибка/отказ/нет API → `unavailable`, без сообщений; «Рядом» показывает популярные. |
+| Баннер | «Тестовый режим: образец данных». |
+
+| Пакет | Версия | Свежесть (npm, 2026-10-21) | Лицензия | Почему |
+|---|---|---|---|---|
+| wouter | 3.13.0 | 2026-09-30 | Unlicense | хэш-роутинг `useHashLocation`, ~2 КБ, peer react ≥16.8 |
+| valibot | 1.5.0 | 2026-09-09 | MIT | схема на границе; та же версия, что закреплена override для `@telegram-apps/sdk` → одна копия в дереве (`npm ls valibot`: deduped) |
+| @googlemaps/js-api-loader | 2.1.3 | 2026-09-22 | Apache-2.0 | официальный загрузчик, `setOptions` + `importLibrary` |
+| @googlemaps/markerclusterer | 2.6.2 | 2026-05-14 | Apache-2.0 | официальная кластеризация, поддерживает `AdvancedMarkerElement` |
+| @types/google.maps | 3.66.7 (dev) | 2026-10-15 | MIT | типы Maps JS API |
+
+`npm audit`: 0 уязвимостей. В CI добавлен `npm audit --audit-level=high`.
+
+## Отклонения от плана (фазы 1–4)
+- `source_url` отзывов не запрашивается: на экране не используется (лишние данные не попадают в браузер). `is_demo` у заведений и отзывов запрашивается — для пометки «демо-данные» (CLAUDE.md).
+- «По числу отзывов» сортирует по `google_reviews_count` (это число видно на карточке).
+- Отзыв без перевода: кнопки переключения нет (переключать не на что), только подпись «Перевод скоро».
