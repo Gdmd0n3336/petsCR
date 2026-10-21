@@ -51,7 +51,7 @@ export function applyFilters(
         (!filters.only24 || v.is_24_7) &&
         (!filters.withPhone || Boolean(v.phone)) &&
         (filters.area === null || v.area_ru === filters.area) &&
-        (matchesName([v.name_ru, v.name_en, v.name_th], filters.query) ||
+        (matchesName([v.name_original, v.name_th, v.name_en, v.name_ru], filters.query) ||
           matchesArea([v.area_ru, v.area_en], filters.query)),
     )
     .map((v) => ({

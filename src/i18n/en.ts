@@ -29,6 +29,11 @@ export const en: Messages = {
   },
   sampleBanner: 'Test mode: sample data',
   demoBadge: 'demo data',
+  name: {
+    transliterate: 'In English',
+    original: 'Original',
+    transliterationLabel: 'transliteration',
+  },
   lang: {
     label: 'Interface language',
     ru: 'RU',

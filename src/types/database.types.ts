@@ -1,6 +1,6 @@
-// Обновлено вручную по схемам 20261020140247_google_data_fields_and_import_staging и
-// 20261021090011_venues_area_labels (TASK-06): поля Google, переводов и района (area_ru/area_en)
-// в venues/reviews, представление venue_review_stats.
+// Обновлено вручную по схемам 20261020140247_google_data_fields_and_import_staging,
+// 20261021090011_venues_area_labels и 20261021090526_venues_name_original (TASK-06): поля Google,
+// переводов, района (area_ru/area_en) и name_original в venues/reviews, представление venue_review_stats.
 // needs_ru/needs_en генерируются базой, поэтому их нет в Insert/Update.
 // Перегенерировать (supabase gen types), когда будет доступ к проекту.
 export type Json =
@@ -367,6 +367,7 @@ export type Database = {
           lat: number | null
           lng: number | null
           name_en: string | null
+          name_original: string | null
           name_ru: string | null
           name_th: string | null
           opening_hours: string | null
@@ -400,6 +401,7 @@ export type Database = {
           lat?: number | null
           lng?: number | null
           name_en?: string | null
+          name_original?: string | null
           name_ru?: string | null
           name_th?: string | null
           opening_hours?: string | null
@@ -433,6 +435,7 @@ export type Database = {
           lat?: number | null
           lng?: number | null
           name_en?: string | null
+          name_original?: string | null
           name_ru?: string | null
           name_th?: string | null
           opening_hours?: string | null

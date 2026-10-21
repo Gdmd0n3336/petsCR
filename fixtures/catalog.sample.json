@@ -4,6 +4,7 @@
   {
    "id": "ebaa0d79-792d-54ce-ba9b-c6f3127bcb26",
    "category": "vet_clinic",
+   "name_original": "โรงพยาบาลสัตว์เพ็ทเฟรนด์ ศรีราชา",
    "name_ru": "Ветбольница Пет Френдс Сирача",
    "name_en": "Pet Friends Animal Hospital Sriracha",
    "name_th": "โรงพยาบาลสัตว์เพ็ทเฟรนด์ ศรีราชา",
@@ -27,6 +28,7 @@
   {
    "id": "3e11417c-696f-59bc-9680-48a18ae66760",
    "category": "vet_clinic",
+   "name_original": "โรงพยาบาลสัตว์ ศรีราชาเพ็ทแคร์",
    "name_ru": "Ветбольница Сирача Пет Кэр",
    "name_en": "Sriracha Pet Care Animal Hospital",
    "name_th": "โรงพยาบาลสัตว์ ศรีราชาเพ็ทแคร์",
@@ -50,6 +52,7 @@
   {
    "id": "e2deb1db-98e8-58d7-a0bd-41d9dbdddf25",
    "category": "vet_clinic",
+   "name_original": "หมอหนึ่งสัตวแพทย์",
    "name_ru": "Ветеринар доктор Нынг",
    "name_en": "Dr. Nueng Veterinary",
    "name_th": "หมอหนึ่งสัตวแพทย์",
@@ -73,6 +76,7 @@
   {
    "id": "8760eca5-5a17-5260-8e16-cbe3a5163a4e",
    "category": "vet_clinic",
+   "name_original": "Dogtown Pet Clinic",
    "name_ru": "Ветклиника Dogtown",
    "name_en": "Dogtown Pet Clinic",
    "name_th": null,
@@ -96,6 +100,7 @@
   {
    "id": "c1072252-1f3c-586e-b551-8f340156a698",
    "category": "vet_clinic",
+   "name_original": "Jomtien / Soi Chaiyaphruek Pet Hospital",
    "name_ru": "Пет-больница Джомтьен / Сой Чайяпхрук",
    "name_en": "Jomtien / Soi Chaiyaphruek Pet Hospital",
    "name_th": null,
@@ -119,6 +124,7 @@
   {
    "id": "ac065fea-a458-52da-981c-f0cf46233744",
    "category": "vet_clinic",
+   "name_original": "พัทยาสัตวแพทย์ - Pattaya Veterinary Clinic",
    "name_ru": "Ветклиника Паттайя",
    "name_en": "Pattaya Veterinary Clinic",
    "name_th": "พัทยาสัตวแพทย์ - Pattaya Veterinary Clinic",
@@ -142,6 +148,7 @@
   {
    "id": "f0a34cbb-ddf1-52be-97ae-560a2a3c70ac",
    "category": "vet_clinic",
+   "name_original": "โรงพยาบาลสัตว์ไตรขวัญไร่กล้วย",
    "name_ru": "Ветбольница Тайкхуан Рай Клуай",
    "name_en": "Trai Khwan Rai Kluay Animal Hospital",
    "name_th": "โรงพยาบาลสัตว์ไตรขวัญไร่กล้วย",
@@ -165,6 +172,7 @@
   {
    "id": "a5c3f058-42d7-5e44-9f59-7115946a86cb",
    "category": "vet_clinic",
+   "name_original": "คลินิกหมอเต้รักษาสัตว์",
    "name_ru": "Ветклиника доктора Тэ",
    "name_en": "Dr. Tae Animal Clinic",
    "name_th": "คลินิกหมอเต้รักษาสัตว์",
@@ -188,6 +196,7 @@
   {
    "id": "d142d039-318c-526b-aa7d-7563792613c8",
    "category": "boarding",
+   "name_original": "โรงแรมหมาแมว Hooui Pet Hotel",
    "name_ru": "Зоогостиница Hooui Pet Hotel (для собак и кошек)",
    "name_en": "Hooui Pet Hotel (Dog & Cat Hotel)",
    "name_th": "โรงแรมหมาแมว Hooui Pet Hotel",
@@ -211,6 +220,7 @@
   {
    "id": "19eb114a-5967-5020-b6c1-782eb37c5db7",
    "category": "vet_clinic",
+   "name_original": "โรงพยาบาลสัตว์ คณะสัตวแพทยศาสตร์ มหาวิทยาลัยเทคโนโลยีราชมงคลตะวันออก",
    "name_ru": "Ветбольница факультета ветеринарной медицины Восточного технологического университета Раджамонгкол",
    "name_en": "Animal Hospital, Faculty of Veterinary Medicine, Rajamangala University of Technology Tawan-ok",
    "name_th": "โรงพยาบาลสัตว์ คณะสัตวแพทยศาสตร์ มหาวิทยาลัยเทคโนโลยีราชมงคลตะวันออก",
@@ -234,6 +244,7 @@
   {
    "id": "e97a830d-f005-5740-bc03-ffd1de2b86f0",
    "category": "vet_clinic",
+   "name_original": "โรงพยาบาลสัตว์อุ้มรัก อ่างศิลา",
    "name_ru": "Ветбольница Ум Рак (Ангсила)",
    "name_en": "Um Rak Animal Hospital Ang Sila",
    "name_th": "โรงพยาบาลสัตว์อุ้มรัก อ่างศิลา",

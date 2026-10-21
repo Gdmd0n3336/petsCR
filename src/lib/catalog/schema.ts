@@ -24,6 +24,7 @@ export const CATEGORIES = ['vet_clinic', 'grooming', 'boarding', 'pet_shop'] as 
 export const VenueSchema = v.object({
   id: v.string(),
   category: v.picklist(CATEGORIES),
+  name_original: nullableText,
   name_ru: nullableText,
   name_en: nullableText,
   name_th: nullableText,

@@ -49,15 +49,17 @@ describe('App with catalog', () => {
     const user = userEvent.setup();
     const { memorySource } = await import('./test/render');
     const { makeVenue } = await import('./test/catalogSample');
-    render(<App source={memorySource([makeVenue({ id: 'v1', name_ru: 'Ветклиника Dogtown' })])} />);
+    render(
+      <App source={memorySource([makeVenue({ id: 'v1', name_original: 'Dogtown Pet Clinic' })])} />,
+    );
 
     expect(screen.getByRole('note')).toHaveTextContent('Тестовый режим: образец данных');
     await user.click(screen.getByRole('button', { name: ru.tabs.catalog }));
-    await user.click(await screen.findByRole('link', { name: /Ветклиника Dogtown/ }));
+    await user.click(await screen.findByRole('link', { name: /Dogtown Pet Clinic/ }));
 
     expect(window.location.hash).toBe('#/venue/v1');
     expect(
-      await screen.findByRole('heading', { level: 2, name: 'Ветклиника Dogtown' }),
+      await screen.findByRole('heading', { level: 2, name: 'Dogtown Pet Clinic' }),
     ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: ru.tabs.catalog })).toHaveAttribute(
       'aria-current',

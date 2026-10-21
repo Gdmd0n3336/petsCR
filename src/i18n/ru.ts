@@ -28,6 +28,11 @@ export const ru = {
   },
   sampleBanner: 'Тестовый режим: образец данных',
   demoBadge: 'демо-данные',
+  name: {
+    transliterate: 'По-русски',
+    original: 'Оригинал',
+    transliterationLabel: 'транслитерация',
+  },
   lang: {
     label: 'Язык интерфейса',
     ru: 'RU',

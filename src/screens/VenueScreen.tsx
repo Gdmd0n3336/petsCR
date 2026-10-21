@@ -5,9 +5,12 @@ import { RatingBlock } from '../components/RatingBlock';
 import { ReviewList } from '../components/ReviewList';
 import { ScreenState } from '../components/ScreenState';
 import { SoonDialog } from '../components/SoonDialog';
+import { VenueNameToggle } from '../components/VenueName';
 import { useI18n } from '../i18n/context';
 import { useVenues } from '../lib/catalog/context';
+import type { Venue } from '../lib/catalog/types';
 import { areaName, venueName } from '../lib/catalog/names';
+import { useVenueName } from '../lib/catalog/useVenueName';
 import { directionsUrl, telHref, telegramShareUrl, venueShareTarget } from '../lib/links';
 
 export function VenueScreen({ id, onBack }: { id: string; onBack: () => void }) {
@@ -32,7 +35,6 @@ export function VenueScreen({ id, onBack }: { id: string; onBack: () => void }) 
     );
   }
 
-  const name = venueName(venue, lang);
   const meta = [t.venue.category[venue.category], areaName(venue, lang)]
     .filter(Boolean)
     .join(' · ');
@@ -41,7 +43,7 @@ export function VenueScreen({ id, onBack }: { id: string; onBack: () => void }) 
     <article className="stack venue">
       {back}
       <header className="venue__header">
-        <h2 className="venue__name">{name}</h2>
+        <VenueHeading venue={venue} />
         <p className="venue__meta">{meta}</p>
         <div className="venue__badges">
           {venue.is_24_7 && <span className="badge">{t.venue.is247}</span>}
@@ -72,7 +74,7 @@ export function VenueScreen({ id, onBack }: { id: string; onBack: () => void }) 
         )}
         <ExternalLink
           className="button button--secondary"
-          href={telegramShareUrl(venueShareTarget(venue.id), name)}
+          href={telegramShareUrl(venueShareTarget(venue.id), venueName(venue))}
         >
           {t.venue.share}
         </ExternalLink>
@@ -97,5 +99,16 @@ export function VenueScreen({ id, onBack }: { id: string; onBack: () => void }) 
       <ReviewList venueId={venue.id} />
       {soonOpen && <SoonDialog onClose={() => setSoonOpen(false)} />}
     </article>
+  );
+}
+
+/** Хук названия живёт в отдельном компоненте: экран выше возвращается раньше при загрузке/ошибке. */
+function VenueHeading({ venue }: { venue: Venue }) {
+  const name = useVenueName(venue);
+  return (
+    <>
+      <h2 className="venue__name">{name.shown}</h2>
+      <VenueNameToggle name={name} />
+    </>
   );
 }

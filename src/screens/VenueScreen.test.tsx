@@ -8,6 +8,7 @@ import { VenueScreen } from './VenueScreen';
 
 const venue = makeVenue({
   id: 'v1',
+  name_original: 'โรงพยาบาลสัตว์อุ้มรัก อ่างศิลา',
   name_ru: 'Ветбольница Ум Рак',
   name_en: 'Um Rak Animal Hospital',
   google_rating: 4.6,
@@ -85,7 +86,7 @@ describe('VenueScreen', () => {
   it('shows the header, both ratings separately with their sources, and actions', async () => {
     renderVenue();
     expect(
-      await screen.findByRole('heading', { level: 2, name: 'Ветбольница Ум Рак' }),
+      await screen.findByRole('heading', { level: 2, name: 'โรงพยาบาลสัตว์อุ้มรัก อ่างศิลา' }),
     ).toBeInTheDocument();
     expect(
       within(screen.getByTestId('rating-google')).getByText('Google 4,6 · 707 отзывов'),
@@ -120,6 +121,25 @@ describe('VenueScreen', () => {
     expect(screen.getByRole('link', { name: ru.venue.share }).getAttribute('href')).toMatch(
       /^https:\/\/t\.me\/share\/url\?url=.*%23%2Fvenue%2Fv1/,
     );
+  });
+
+  it('shows the original name and the transliteration on request (rule 1)', async () => {
+    const user = userEvent.setup();
+    renderVenue({ lang: 'en' });
+    const heading = await screen.findByRole('heading', {
+      level: 2,
+      name: 'โรงพยาบาลสัตว์อุ้มรัก อ่างศิลา',
+    });
+    expect(heading).toHaveTextContent('โรงพยาบาลสัตว์อุ้มรัก อ่างศิลา');
+    await user.click(screen.getByRole('button', { name: en.name.transliterate }));
+    expect(heading).toHaveTextContent('Um Rak Animal Hospital');
+    expect(screen.getByText(en.name.transliterationLabel)).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: en.name.original }));
+    expect(heading).toHaveTextContent('โรงพยาบาลสัตว์อุ้มรัก อ่างศิลา');
+    // в «Поделиться» уходит оригинальное название
+    expect(
+      decodeURIComponent(screen.getByRole('link', { name: en.venue.share }).getAttribute('href')!),
+    ).toContain('โรงพยาบาลสัตว์อุ้มรัก');
   });
 
   it('parses opening hours into weekdays', async () => {

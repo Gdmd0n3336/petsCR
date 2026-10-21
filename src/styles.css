@@ -550,6 +550,20 @@ body {
   font-size: 12px;
 }
 
+/* Название и транслитерация */
+.venue-name-toggle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 10px;
+  margin-top: -6px;
+}
+
+.venue-name-toggle__label {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
 /* Окно «Скоро» */
 .overlay {
   position: fixed;

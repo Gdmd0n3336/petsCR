@@ -6,6 +6,7 @@ export function makeVenue(overrides: Partial<Venue> = {}): Venue {
   return {
     id: 'v1',
     category: 'vet_clinic',
+    name_original: 'Vet Clinic',
     name_ru: 'Ветклиника',
     name_en: 'Vet Clinic',
     name_th: null,
