@@ -3,6 +3,8 @@ import { directionsUrl, telHref, telegramShareUrl, venueShareTarget, venueWebUrl
 describe('links', () => {
   it('builds tel: links with digits only', () => {
     expect(telHref('+66 38 773 007')).toBe('tel:+6638773007');
+    expect(telHref('038 123 456, 081 234 5678')).toBe('tel:038123456');
+    expect(telHref('038 123 456 / 081 234 5678')).toBe('tel:038123456');
   });
 
   it('builds Google Maps directions by coordinates', () => {

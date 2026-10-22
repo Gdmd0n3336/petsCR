@@ -69,8 +69,12 @@ export function createSupabaseSource(client: SupabaseClient<Database>): CatalogS
       // Одна лишняя строка (range включает обе границы) показывает, есть ли следующая страница.
       const { data, error } = await query.order('id').range(from, from + REVIEWS_PAGE_SIZE);
       if (error) fail(error);
-      const rows = parseRows(ReviewSchema, data);
-      return { items: rows.slice(0, REVIEWS_PAGE_SIZE), hasMore: rows.length > REVIEWS_PAGE_SIZE };
+      // «Есть ещё» — по сырому ответу: отброшенная схемой 11-я строка не прячет следующую страницу.
+      const raw: unknown[] = Array.isArray(data) ? data : [];
+      return {
+        items: parseRows(ReviewSchema, raw.slice(0, REVIEWS_PAGE_SIZE)),
+        hasMore: raw.length > REVIEWS_PAGE_SIZE,
+      };
     },
   };
 }

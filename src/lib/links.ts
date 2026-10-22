@@ -1,8 +1,9 @@
 import { readConfig } from './config';
 
-/** tel: только с цифрами и плюсом. */
+/** tel: только с цифрами и плюсом; если номеров несколько («038…, 081…»), берём первый. */
 export function telHref(phone: string): string {
-  return `tel:${phone.replace(/[^\d+]/g, '')}`;
+  const first = phone.split(/[,;/]|\s{2,}/)[0] ?? phone;
+  return `tel:${first.replace(/[^\d+]/g, '')}`;
 }
 
 /** Маршрут в Google Картах по нашим координатам (Maps URLs, ключ не нужен). */

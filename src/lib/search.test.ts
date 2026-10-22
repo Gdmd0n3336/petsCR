@@ -18,6 +18,13 @@ describe('search by name', () => {
     expect(matchesName(['โรงพยาบาลสัตว์เพ็ทเฟรนด์'], 'อุ้มรัก')).toBe(false);
   });
 
+  it('does not match short queries by consonants only', () => {
+    expect(matchesName(['Pattaya Animal Hospital'], 'pet')).toBe(false);
+    expect(matchesName(['Kitty Care'], 'cat')).toBe(false);
+    expect(matchesName(['Ivy Tree'], 'vet')).toBe(false);
+    expect(matchesName(['Pet Friends'], 'pet')).toBe(true);
+  });
+
   it('does not match unrelated names and treats an empty query as a match', () => {
     expect(matchesName(['Dogtown Pet Clinic'], 'Ум Рак')).toBe(false);
     expect(matchesName([null, 'Anything'], '  ')).toBe(true);

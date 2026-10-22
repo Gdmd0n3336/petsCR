@@ -33,7 +33,7 @@ function parseDay(value: string): DayHours | null {
     const m = RANGE.exec(part.trim());
     if (!m) return null;
     const [, h1 = '', m1 = '', h2 = '', m2 = ''] = m;
-    if (Number(h1) > 24 || Number(h2) > 24) return null;
+    if (Number(h1) > 24 || Number(h2) > 24 || Number(m1) > 59 || Number(m2) > 59) return null;
     ranges.push([pad(h1, m1), pad(h2, m2)]);
   }
   return { kind: 'ranges', ranges };

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ru } from '../i18n/ru';
 import { DEFAULT_FILTERS, type CatalogFilters } from '../lib/catalog/filters';
 import { PATTAYA } from '../lib/geo';
+import { resetMapsAuthFailureForTests } from '../lib/maps';
 import { CatalogScreen } from '../screens/CatalogScreen';
 import { makeVenue } from '../test/catalogSample';
 import { memorySource, renderWithProviders } from '../test/render';
@@ -80,6 +81,7 @@ function Harness() {
 }
 
 beforeEach(() => {
+  resetMapsAuthFailureForTests();
   fake.maps.length = 0;
   fake.markers.length = 0;
   fake.clusters.length = 0;
@@ -156,6 +158,18 @@ describe('catalog map', () => {
     await vi.waitFor(() => expect(fake.maps).toHaveLength(1));
     act(() => (window as Window & { gm_authFailure?: () => void }).gm_authFailure?.());
     expect(await screen.findByText(ru.map.unavailable)).toBeInTheDocument();
+  });
+
+  it('keeps the placeholder after returning to the catalog (Google reports a bad key only once)', async () => {
+    vi.stubEnv('VITE_GOOGLE_MAPS_API_KEY', 'test-key');
+    const first = renderWithProviders(<Harness />, { source: memorySource(venues) });
+    await vi.waitFor(() => expect(fake.maps).toHaveLength(1));
+    act(() => (window as Window & { gm_authFailure?: () => void }).gm_authFailure?.());
+    first.unmount();
+
+    renderWithProviders(<Harness />, { source: memorySource(venues) });
+    expect(await screen.findByText(ru.map.unavailable)).toBeInTheDocument();
+    expect(fake.maps).toHaveLength(1);
   });
 
   it('switches between list and map', async () => {

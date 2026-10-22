@@ -228,6 +228,18 @@ describe('VenueScreen', () => {
     expect(await screen.findByText(ru.reviews.emptyFiltered)).toBeInTheDocument();
   });
 
+  it('does not show reviews of another filter when the next request fails', async () => {
+    const source = memorySource([venue], [translated, russian]);
+    const user = userEvent.setup();
+    renderWithProviders(<VenueScreen id="v1" onBack={vi.fn()} />, { source });
+    await screen.findByText('Доктор добрый');
+    source.loadReviews.mockRejectedValueOnce(new Error('offline'));
+    await user.selectOptions(screen.getByRole('combobox', { name: ru.reviews.ratingFilter }), '1');
+    expect(await screen.findByRole('alert')).toBeInTheDocument();
+    expect(screen.queryByText('Доктор добрый')).toBeNull();
+    expect(screen.queryByText('Всё отлично')).toBeNull();
+  });
+
   it('opens the «soon» dialog for booking', async () => {
     const user = userEvent.setup();
     renderVenue();

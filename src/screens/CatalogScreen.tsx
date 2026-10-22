@@ -15,6 +15,7 @@ import {
   type VenueListItem,
 } from '../lib/catalog/filters';
 import { readConfig } from '../lib/config';
+import { hasMapsAuthFailed } from '../lib/maps';
 import type { LatLng } from '../lib/geo';
 import type { GeoStatus } from '../lib/useGeolocation';
 
@@ -32,7 +33,11 @@ export function CatalogScreen({ filters, onFiltersChange, geo }: Props) {
   const [mapFailed, setMapFailed] = useState(false);
   const onMapUnavailable = useCallback(() => setMapFailed(true), []);
   // Без ключа карта не загружается вовсе: сразу заглушка и список.
-  const mapIssue = !readConfig().mapsApiKey ? 'noKey' : mapFailed ? 'unavailable' : null;
+  const mapIssue = !readConfig().mapsApiKey
+    ? 'noKey'
+    : mapFailed || hasMapsAuthFailed()
+      ? 'unavailable'
+      : null;
   // Один и тот же массив, пока не изменились данные или фильтры: карта не пересоздаёт маркеры зря.
   const items = useMemo(
     () => applyFilters(venues, filters, geo.position),

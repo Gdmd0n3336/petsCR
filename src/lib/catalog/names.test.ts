@@ -12,6 +12,12 @@ describe('venueName (rule 1)', () => {
     expect(venueName(full)).toBe('โรงพยาบาลสัตว์อุ้มรัก');
   });
 
+  it('treats empty strings as missing', () => {
+    expect(venueName({ ...full, name_original: '' })).toBe('โรงพยาบาลสัตว์อุ้มรัก อ่างศิลา');
+    expect(venueName({ ...full, name_original: '  ', name_th: '' })).toBe('Um Rak Animal Hospital');
+    expect(areaName({ area_ru: 'Сирача', area_en: '' }, 'en')).toBe('Сирача');
+  });
+
   it('falls back to name_th, then name_en, then name_ru', () => {
     expect(venueName({ ...full, name_original: null })).toBe('โรงพยาบาลสัตว์อุ้มรัก อ่างศิลา');
     expect(venueName({ ...full, name_original: null, name_th: null })).toBe(

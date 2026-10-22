@@ -28,18 +28,34 @@ export async function loadGoogleMaps(apiKey: string, lang: Lang): Promise<MapsLi
 
 type AuthWindow = Window & { gm_authFailure?: () => void };
 
+let authFailed = false;
+const authListeners = new Set<() => void>();
+
+/** Ключ отклонён Google в этой сессии (событие приходит один раз, при первой загрузке API). */
+export function hasMapsAuthFailed(): boolean {
+  return authFailed;
+}
+
 /**
  * Google вызывает window.gm_authFailure при неверном ключе или запрещённом домене
- * (сама карта при этом становится серой). Подписка возвращает функцию отписки.
+ * (сама карта при этом становится серой). Флаг запоминается на всю сессию, подписка
+ * возвращает функцию отписки.
  */
 export function onMapsAuthFailure(callback: () => void): () => void {
   const w = window as AuthWindow;
-  const previous = w.gm_authFailure;
-  w.gm_authFailure = () => {
-    previous?.();
-    callback();
-  };
+  if (!w.gm_authFailure) {
+    w.gm_authFailure = () => {
+      authFailed = true;
+      authListeners.forEach((listener) => listener());
+    };
+  }
+  authListeners.add(callback);
   return () => {
-    w.gm_authFailure = previous;
+    authListeners.delete(callback);
   };
+}
+
+/** Только для тестов: сбросить запомненный сбой ключа. */
+export function resetMapsAuthFailureForTests(): void {
+  authFailed = false;
 }

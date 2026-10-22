@@ -99,7 +99,7 @@ export function VenueMap({ venues, position, geoStatus, onRequestLocation, onUna
     };
   }, [ready, venues, t.map]);
 
-  // Позиция пользователя: точка «Вы здесь» и центр карты.
+  // Позиция пользователя: точка «Вы здесь» (подпись меняется вместе с языком).
   useEffect(() => {
     if (!ready || !position) return;
     const dot = document.createElement('div');
@@ -110,12 +110,17 @@ export function VenueMap({ venues, position, geoStatus, onRequestLocation, onUna
       title: t.map.you,
       content: dot,
     });
-    ready.map.panTo(position);
-    ready.map.setZoom(13);
     return () => {
       you.map = null;
     };
   }, [ready, position, t.map.you]);
+
+  // Центр на пользователе — только когда появилась или сменилась позиция, не при смене языка.
+  useEffect(() => {
+    if (!ready || !position) return;
+    ready.map.panTo(position);
+    ready.map.setZoom(13);
+  }, [ready, position]);
 
   const selected = venues.find((v) => v.id === selectedId) ?? null;
   const missing = venues.filter((v) => v.lat === null || v.lng === null).length;

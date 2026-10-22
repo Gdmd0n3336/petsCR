@@ -86,7 +86,7 @@ export function VenueScreen({ id, onBack }: { id: string; onBack: () => void }) 
       {venue.address && (
         <section className="card">
           <h2 className="section-title">{t.venue.address}</h2>
-          <p lang="th">{venue.address}</p>
+          <p>{venue.address}</p>
         </section>
       )}
       {venue.opening_hours && (

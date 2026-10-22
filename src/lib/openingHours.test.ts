@@ -47,6 +47,7 @@ describe('parseOpeningHours', () => {
     expect(parseOpeningHours(null)).toBeNull();
     expect(parseOpeningHours('Mon-Fri 9-18')).toBeNull();
     expect(parseOpeningHours(week(['by appointment']))).toBeNull();
+    expect(parseOpeningHours(week(['9:99 to 19:00']))).toBeNull();
     expect(parseOpeningHours('วันจันทร์: 9:00 to 19:00')).toBeNull();
   });
 });

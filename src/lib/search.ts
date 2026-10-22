@@ -77,10 +77,12 @@ export function matchesArea(areas: readonly (string | null)[], query: string): b
 export function matchesName(names: readonly (string | null)[], query: string): boolean {
   const q = latinize(query);
   if (!q) return true;
-  const qSkeleton = q.length >= 3 ? skeleton(q) : '';
+  // Сравнение по согласным — только для запросов от 5 букв: короткие вроде «pet»
+  // иначе находят «Pattaya» почти в каждом названии.
+  const qSkeleton = q.length >= 5 ? skeleton(q) : '';
   return names.some((name) => {
     if (!name) return false;
     const n = latinize(name);
-    return n.includes(q) || (qSkeleton.length >= 2 && skeleton(n).includes(qSkeleton));
+    return n.includes(q) || (qSkeleton.length >= 3 && skeleton(n).includes(qSkeleton));
   });
 }

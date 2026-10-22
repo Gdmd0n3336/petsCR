@@ -316,7 +316,7 @@ body {
 }
 
 .segmented__item {
-  min-height: 38px;
+  min-height: var(--tap-min);
   min-width: var(--tap-min);
   padding: 0 12px;
   border: 0;
@@ -613,7 +613,6 @@ body {
 
 .segmented--wide .segmented__item {
   flex: 1;
-  min-height: var(--tap-min);
 }
 
 .venue-map {

@@ -111,6 +111,22 @@ describe('supabase catalog source', () => {
     ]);
   });
 
+  it('keeps «show more» when the extra 11th row fails the schema', async () => {
+    const rows = [
+      ...Array.from({ length: 10 }, (_, i) => makeReview({ id: `r${i}` })),
+      { broken: true },
+    ];
+    const { client } = fakeClient({ reviews: { data: rows, error: null } });
+    const page = await createSupabaseSource(client).loadReviews({
+      venueId: 'v1',
+      sort: 'newest',
+      rating: null,
+      page: 0,
+    });
+    expect(page.items).toHaveLength(10);
+    expect(page.hasMore).toBe(true);
+  });
+
   it('throws a generic error without the server message', async () => {
     const { client } = fakeClient({
       venues: {

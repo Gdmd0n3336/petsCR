@@ -72,12 +72,18 @@ export function useReviews({ venueId, sort, rating }: ReviewsKey) {
         }),
       () =>
         alive &&
-        setResult((prev) => ({ id, items: prev?.items ?? [], hasMore: false, failed: true })),
+        setResult((prev) => ({
+          id,
+          // старые отзывы оставляем только для того же фильтра (сбой при «Показать ещё»)
+          items: prev?.id.startsWith(`${key}|`) ? prev.items : [],
+          hasMore: false,
+          failed: true,
+        })),
     );
     return () => {
       alive = false;
     };
-  }, [source, venueId, sort, rating, count, id]);
+  }, [source, venueId, sort, rating, count, id, key]);
 
   const current = result?.id === id ? result : null;
   // При догрузке уже показанные отзывы остаются на экране.
