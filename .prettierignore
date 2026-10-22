@@ -7,3 +7,5 @@ package-lock.json
 bulletproof-main.zip
 # Сгенерировано `supabase gen types typescript`; не форматируем, чтобы перегенерация давала чистый diff.
 src/types/database.types.ts
+# Образец данных от владельца: храним байт в байт.
+fixtures/

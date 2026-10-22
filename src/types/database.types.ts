@@ -1,3 +1,8 @@
+// Обновлено вручную по схемам 20261020140247_google_data_fields_and_import_staging,
+// 20261021090011_venues_area_labels и 20261021090526_venues_name_original (TASK-06): поля Google,
+// переводов, района (area_ru/area_en) и name_original в venues/reviews, представление venue_review_stats.
+// needs_ru/needs_en генерируются базой, поэтому их нет в Insert/Update.
+// Перегенерировать (supabase gen types), когда будет доступ к проекту.
 export type Json =
   | string
   | number
@@ -152,6 +157,8 @@ export type Database = {
           id: string
           is_demo: boolean
           is_published: boolean
+          needs_en: boolean | null
+          needs_ru: boolean | null
           price_paid: number | null
           rating_communication: number | null
           rating_doctors: number | null
@@ -161,7 +168,9 @@ export type Database = {
           source: string
           source_url: string | null
           text: string | null
+          text_en: string | null
           text_lang: string | null
+          text_ru: string | null
           venue_id: string
           visit_verified: boolean
         }
@@ -180,7 +189,9 @@ export type Database = {
           source: string
           source_url?: string | null
           text?: string | null
+          text_en?: string | null
           text_lang?: string | null
+          text_ru?: string | null
           venue_id: string
           visit_verified?: boolean
         }
@@ -199,7 +210,9 @@ export type Database = {
           source?: string
           source_url?: string | null
           text?: string | null
+          text_en?: string | null
           text_lang?: string | null
+          text_ru?: string | null
           venue_id?: string
           visit_verified?: boolean
         }
@@ -335,10 +348,17 @@ export type Database = {
       }
       venues: {
         Row: {
+          address: string | null
+          area_en: string | null
+          area_ru: string | null
           category: string
+          category_raw: string | null
           coords_verified_at: string | null
           created_at: string
           district: string | null
+          google_place_id: string | null
+          google_rating: number | null
+          google_reviews_count: number | null
           id: string
           is_24_7: boolean
           is_demo: boolean
@@ -347,6 +367,7 @@ export type Database = {
           lat: number | null
           lng: number | null
           name_en: string | null
+          name_original: string | null
           name_ru: string | null
           name_th: string | null
           opening_hours: string | null
@@ -361,10 +382,17 @@ export type Database = {
           website: string | null
         }
         Insert: {
+          address?: string | null
+          area_en?: string | null
+          area_ru?: string | null
           category: string
+          category_raw?: string | null
           coords_verified_at?: string | null
           created_at?: string
           district?: string | null
+          google_place_id?: string | null
+          google_rating?: number | null
+          google_reviews_count?: number | null
           id?: string
           is_24_7?: boolean
           is_demo?: boolean
@@ -373,6 +401,7 @@ export type Database = {
           lat?: number | null
           lng?: number | null
           name_en?: string | null
+          name_original?: string | null
           name_ru?: string | null
           name_th?: string | null
           opening_hours?: string | null
@@ -387,10 +416,17 @@ export type Database = {
           website?: string | null
         }
         Update: {
+          address?: string | null
+          area_en?: string | null
+          area_ru?: string | null
           category?: string
+          category_raw?: string | null
           coords_verified_at?: string | null
           created_at?: string
           district?: string | null
+          google_place_id?: string | null
+          google_rating?: number | null
+          google_reviews_count?: number | null
           id?: string
           is_24_7?: boolean
           is_demo?: boolean
@@ -399,6 +435,7 @@ export type Database = {
           lat?: number | null
           lng?: number | null
           name_en?: string | null
+          name_original?: string | null
           name_ru?: string | null
           name_th?: string | null
           opening_hours?: string | null
@@ -416,7 +453,14 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      venue_review_stats: {
+        Row: {
+          avg_rating: number | null
+          reviews_count: number | null
+          venue_id: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       refresh_venue_metrics: { Args: never; Returns: undefined }
