@@ -87,3 +87,25 @@ export function isFiltered(filters: CatalogFilters): boolean {
     Boolean(filters.query.trim()) || filters.only24 || filters.withPhone || filters.area !== null
   );
 }
+
+export const NEARBY_LIMIT = 20;
+
+/**
+ * Вкладка «Рядом»: с координатами — ближайшие по расстоянию, без них — самые популярные
+ * (больше всего отзывов Google, затем рейтинг).
+ */
+export function pickNearby(
+  venues: readonly Venue[],
+  position: LatLng | null,
+  limit = NEARBY_LIMIT,
+): { mode: 'nearest' | 'popular'; items: VenueListItem[] } {
+  const items = applyFilters(
+    venues,
+    { ...DEFAULT_FILTERS, sort: position ? 'distance' : 'reviews_count' },
+    position,
+  );
+  return {
+    mode: position ? 'nearest' : 'popular',
+    items: (position ? items.filter((v) => v.distanceKm !== null) : items).slice(0, limit),
+  };
+}

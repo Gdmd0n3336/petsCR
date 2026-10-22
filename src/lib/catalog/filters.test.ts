@@ -1,6 +1,6 @@
 import { makeVenue } from '../../test/catalogSample';
 import { PATTAYA } from '../geo';
-import { DEFAULT_FILTERS, applyFilters, areasOf, isFiltered } from './filters';
+import { DEFAULT_FILTERS, applyFilters, areasOf, isFiltered, pickNearby } from './filters';
 
 const venues = [
   makeVenue({
@@ -88,5 +88,23 @@ describe('catalog filters', () => {
   it('knows when filters are active', () => {
     expect(isFiltered(DEFAULT_FILTERS)).toBe(false);
     expect(isFiltered({ ...DEFAULT_FILTERS, query: ' x ' })).toBe(true);
+  });
+});
+
+describe('pickNearby', () => {
+  it('lists the closest venues with coordinates when the position is known', () => {
+    const { mode, items } = pickNearby(venues, PATTAYA);
+    expect(mode).toBe('nearest');
+    expect(items.map((v) => v.id)).toEqual(['a', 'b', 'd']);
+  });
+
+  it('falls back to the most reviewed venues without a position', () => {
+    const { mode, items } = pickNearby(venues, null);
+    expect(mode).toBe('popular');
+    expect(items.map((v) => v.id)).toEqual(['a', 'd', 'b', 'c']);
+  });
+
+  it('limits the list', () => {
+    expect(pickNearby(venues, null, 2).items).toHaveLength(2);
   });
 });

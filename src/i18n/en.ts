@@ -62,6 +62,12 @@ export const en: Messages = {
     reset: 'Reset filters',
     view: { label: 'Catalog view', list: 'List', map: 'Map' },
   },
+  nearby: {
+    nearest: 'Closest to you',
+    popular: 'Popular places',
+    popularHint: 'Most reviewed on Google',
+    allCatalog: 'Full catalog',
+  },
   map: {
     label: 'Map of places',
     loading: 'Loading the map…',

@@ -78,7 +78,7 @@ function Shell() {
             <PetScreen />
           </Route>
           <Route>
-            <NearbyScreen />
+            <NearbyScreen geo={geo} />
           </Route>
         </Switch>
       </main>

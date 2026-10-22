@@ -2,13 +2,11 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ru, type TabId } from '../i18n/ru';
 import { BookingsScreen } from './BookingsScreen';
-import { NearbyScreen } from './NearbyScreen';
 import { PetScreen } from './PetScreen';
 import { ShopScreen } from './ShopScreen';
 import type { ScreenProps } from './types';
 
 const screens: [TabId, (props: ScreenProps) => React.JSX.Element][] = [
-  ['nearby', NearbyScreen],
   ['bookings', BookingsScreen],
   ['shop', ShopScreen],
   ['pet', PetScreen],

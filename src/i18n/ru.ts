@@ -61,6 +61,12 @@ export const ru = {
     reset: 'Сбросить фильтры',
     view: { label: 'Вид каталога', list: 'Список', map: 'Карта' },
   },
+  nearby: {
+    nearest: 'Ближайшие к вам',
+    popular: 'Популярные заведения',
+    popularHint: 'Больше всего отзывов на Google',
+    allCatalog: 'Весь каталог',
+  },
   map: {
     label: 'Карта заведений',
     loading: 'Загружаем карту…',

@@ -27,9 +27,10 @@ describe('App', () => {
       'aria-current',
       'page',
     );
-    expect(screen.getByRole('main', { name: ru.tabs.nearby })).toHaveTextContent(
-      ru.screens.nearby.empty,
-    );
+    // без геолокации (в jsdom её нет) — популярные из образца данных
+    expect(
+      await screen.findByRole('heading', { level: 2, name: ru.nearby.popular }),
+    ).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: ru.tabs.pet }));
 
