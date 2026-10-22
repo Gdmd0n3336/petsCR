@@ -37,15 +37,8 @@ function parseSample(raw: unknown): Sample {
     Array.isArray(rows)
       ? rows.filter((row) => (row as { is_published?: unknown })?.is_published !== false)
       : [];
-  // Образец снят до миграции 20261021090011: если area_* нет, район берётся из старого district
-  // (только тестовый режим; в базе area_ru/area_en заполнены).
-  const withArea = (rows: unknown[]) =>
-    rows.map((row) => {
-      const r = (row ?? {}) as Record<string, unknown>;
-      return 'area_ru' in r ? r : { area_ru: r.district ?? null, area_en: null, ...r };
-    });
   return {
-    venues: parseRows(VenueSchema, withArea(published(data.venues))).map((venue) => ({
+    venues: parseRows(VenueSchema, published(data.venues)).map((venue) => ({
       ...venue,
       collected: collected.get(venue.id) ?? null,
     })),

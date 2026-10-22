@@ -12,9 +12,10 @@ describe('fixture catalog source', () => {
     expect(umRak?.google_rating).toBe(4.6);
     expect(umRak?.google_reviews_count).toBe(707);
     expect(umRak?.collected).toEqual({ reviewsCount: 17, avgRating: 5 });
-    // образец без area_*: район из старого district, английского названия нет
-    expect(umRak?.area_ru).toBe('Чонбури');
-    expect(umRak?.area_en).toBeNull();
+    // районы и оригинальные названия в образце сняты с базы
+    expect(umRak?.area_ru).toBe('Чонбури (город)');
+    expect(umRak?.area_en).toBe('Chonburi (city)');
+    expect(venues.every((v) => v.area_ru && v.name_original)).toBe(true);
   });
 
   it('hides unpublished rows and paginates, sorts and filters reviews like the database', async () => {
@@ -66,14 +67,5 @@ describe('fixture catalog source', () => {
     const source = createFixtureSource(load);
     await expect(source.loadVenues()).rejects.toThrow('offline');
     await expect(source.loadVenues()).resolves.toHaveLength(11);
-  });
-});
-
-describe('fixture areas', () => {
-  it('keeps area_ru / area_en when the sample has them', async () => {
-    const venue = { ...makeVenueRow(), district: 'old' };
-    const [loaded] = await createFixtureSource(async () => ({ venues: [venue] })).loadVenues();
-    expect(loaded?.area_ru).toBe('Паттайя');
-    expect(loaded?.area_en).toBe('Pattaya');
   });
 });
