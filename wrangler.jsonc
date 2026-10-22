@@ -1,0 +1,15 @@
+// Выкладка на Cloudflare Workers как статический сайт (без кода Worker).
+// Сверено: developers.cloudflare.com/workers/static-assets/routing/single-page-application
+// и developers.cloudflare.com/workers/wrangler/configuration/#assets (2026-10-22).
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  // Должно совпадать с именем Worker в панели Cloudflare, иначе сборка падает.
+  "name": "lapa-app",
+  "compatibility_date": "2026-10-22",
+  "assets": {
+    // Результат `npm run build` (Vite).
+    "directory": "./dist",
+    // Любой путь без файла отдаёт index.html (маршруты приложения в хэше, но так надёжнее).
+    "not_found_handling": "single-page-application",
+  },
+}
