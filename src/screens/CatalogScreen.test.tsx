@@ -41,7 +41,7 @@ function Harness() {
   return <CatalogScreen filters={filters} onFiltersChange={setFilters} geo={geo} />;
 }
 
-const names = () => screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent);
+const names = () => screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent);
 
 describe('CatalogScreen', () => {
   it('lists venues sorted by Google rating with labelled Google numbers', async () => {
@@ -77,19 +77,25 @@ describe('CatalogScreen', () => {
     expect(names()).toEqual(['Bay Vet Clinic']);
     await user.click(screen.getByRole('button', { name: ru.catalog.only24 }));
 
-    await user.selectOptions(screen.getByRole('combobox', { name: ru.catalog.district }), 'Сирача');
+    await user.click(screen.getByRole('button', { name: ru.catalog.areaChip(ru.catalog.areaAll) }));
+    const areaSheet = screen.getByRole('dialog', { name: ru.catalog.district });
+    await user.click(within(areaSheet).getByRole('button', { name: 'Сирача' }));
+    expect(screen.queryByRole('dialog')).toBeNull();
     expect(names()).toEqual(['โรงพยาบาลสัตว์เพ็ทเฟรนด์']);
+    expect(screen.getByRole('button', { name: ru.catalog.areaChip('Сирача') })).toHaveFocus();
 
     await user.click(screen.getByRole('button', { name: ru.catalog.withPhone }));
     expect(screen.getByText(ru.catalog.noResults)).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: ru.catalog.reset }));
     expect(names()).toHaveLength(2);
 
-    await user.selectOptions(
-      screen.getByRole('combobox', { name: ru.catalog.sortLabel }),
-      'reviews_count',
+    await user.click(screen.getByRole('button', { name: ru.catalog.sort.google_rating }));
+    const sortSheet = screen.getByRole('dialog', { name: ru.catalog.sortLabel });
+    await user.click(
+      within(sortSheet).getByRole('button', { name: ru.catalog.sort.reviews_count }),
     );
     expect(names()).toEqual(['Bay Vet Clinic', 'โรงพยาบาลสัตว์เพ็ทเฟรนด์']);
+    expect(screen.getByRole('button', { name: ru.catalog.sort.reviews_count })).toBeInTheDocument();
   });
 
   it('shows the transliteration on request and returns to the original', async () => {
@@ -97,10 +103,10 @@ describe('CatalogScreen', () => {
     renderWithProviders(<Harness />, { source: memorySource(venues) });
     const card = (await screen.findByText('โรงพยาบาลสัตว์เพ็ทเฟรนด์')).closest('li')!;
     await user.click(within(card).getByRole('button', { name: ru.name.transliterate }));
-    expect(within(card).getByRole('heading', { level: 3 })).toHaveTextContent('Пет Френдс');
+    expect(within(card).getByRole('heading', { level: 2 })).toHaveTextContent('Пет Френдс');
     expect(within(card).getByText(ru.name.transliterationLabel)).toBeInTheDocument();
     await user.click(within(card).getByRole('button', { name: ru.name.original }));
-    expect(within(card).getByRole('heading', { level: 3 })).toHaveTextContent(
+    expect(within(card).getByRole('heading', { level: 2 })).toHaveTextContent(
       'โรงพยาบาลสัตว์เพ็ทเฟรนด์',
     );
     expect(within(card).queryByText(ru.name.transliterationLabel)).toBeNull();
@@ -108,8 +114,15 @@ describe('CatalogScreen', () => {
 
   it('offers distance sorting only after geolocation is granted', async () => {
     renderWithProviders(<Harness />, { source: memorySource(venues) });
-    const sort = await screen.findByRole('combobox', { name: ru.catalog.sortLabel });
-    expect(within(sort).queryByRole('option', { name: ru.catalog.sort.distance })).toBeNull();
+    const user = userEvent.setup();
+    await user.click(await screen.findByRole('button', { name: ru.catalog.sort.google_rating }));
+    const sheet = screen.getByRole('dialog', { name: ru.catalog.sortLabel });
+    expect(within(sheet).queryByRole('button', { name: ru.catalog.sort.distance })).toBeNull();
+    // «Учесть, где я» — в шторке сортировки, а не отдельной строкой над списком
+    await user.click(within(sheet).getByRole('button', { name: ru.catalog.useLocation }));
+    expect(geo.request).toHaveBeenCalled();
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(screen.getByRole('button', { name: ru.catalog.sort.distance })).toBeInTheDocument();
   });
 
   it('shows loading, then error with retry', async () => {
@@ -134,6 +147,53 @@ describe('CatalogScreen', () => {
     // название не переводится: в английском интерфейсе тот же оригинал
     expect(names()).toEqual(['โรงพยาบาลสัตว์เพ็ทเฟรนด์', 'Bay Vet Clinic']);
     expect(screen.getByText('Google 4.2 · 707 reviews')).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'Si Racha' })).toBeInTheDocument();
+    const user = userEvent.setup();
+    await user.click(screen.getByRole('button', { name: 'Area: all' }));
+    const sheet = screen.getByRole('dialog', { name: en.catalog.district });
+    await user.click(within(sheet).getByRole('button', { name: 'Si Racha' }));
+    expect(screen.getByRole('button', { name: 'Area: Si Racha' })).toBeInTheDocument();
+  });
+
+  it('closes the choice sheet with Escape, close button or a tap outside without changes', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Harness />, { source: memorySource(venues) });
+    const chip = await screen.findByRole('button', {
+      name: ru.catalog.areaChip(ru.catalog.areaAll),
+    });
+    expect(chip).toHaveAttribute('aria-expanded', 'false');
+
+    await user.click(chip);
+    expect(chip).toHaveAttribute('aria-expanded', 'true');
+    // фокус на выбранном пункте
+    expect(screen.getByRole('button', { name: ru.catalog.allDistricts })).toHaveFocus();
+    expect(screen.getByRole('button', { name: ru.catalog.allDistricts })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(chip).toHaveFocus();
+
+    await user.click(chip);
+    await user.click(screen.getByRole('button', { name: ru.catalog.closeSheet }));
+    expect(screen.queryByRole('dialog')).toBeNull();
+
+    await user.click(chip);
+    await user.click(document.querySelector('.overlay')!);
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(names()).toHaveLength(2);
+  });
+
+  it('keeps all filter chips in one strip', async () => {
+    renderWithProviders(<Harness />, { source: memorySource(venues) });
+    await screen.findByText(ru.catalog.found(2));
+    const strip = document.querySelector('.filters__strip')!;
+    expect([...strip.querySelectorAll('button')].map((b) => b.textContent)).toEqual([
+      ru.catalog.areaChip(ru.catalog.areaAll),
+      ru.catalog.sort.google_rating,
+      ru.catalog.only24,
+      ru.catalog.withPhone,
+    ]);
+    expect(screen.queryByRole('combobox')).toBeNull();
   });
 });

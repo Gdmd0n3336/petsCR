@@ -55,6 +55,9 @@ export const ru = {
     withPhone: 'Есть телефон',
     district: 'Район',
     allDistricts: 'Все районы',
+    areaChip: (area: string) => `Район: ${area}`,
+    areaAll: 'все',
+    closeSheet: 'Закрыть',
     sortLabel: 'Сортировка',
     sort: {
       google_rating: 'По рейтингу Google',

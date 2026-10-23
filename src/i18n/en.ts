@@ -56,6 +56,9 @@ export const en: Messages = {
     withPhone: 'Has phone',
     district: 'Area',
     allDistricts: 'All areas',
+    areaChip: (area: string) => `Area: ${area}`,
+    areaAll: 'all',
+    closeSheet: 'Close',
     sortLabel: 'Sort',
     sort: {
       google_rating: 'By Google rating',

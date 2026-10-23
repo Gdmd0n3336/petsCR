@@ -8,7 +8,15 @@ import { telHref } from '../lib/links';
 import { Icon } from './Icon';
 import { VenueNameToggle } from './VenueName';
 
-export function VenueCard({ venue }: { venue: VenueListItem }) {
+/** headingLevel: 3 — под заголовком секции («Рядом»), 2 — прямо под заголовком экрана (каталог). */
+export function VenueCard({
+  venue,
+  headingLevel = 3,
+}: {
+  venue: VenueListItem;
+  headingLevel?: 2 | 3;
+}) {
+  const Heading = headingLevel === 2 ? 'h2' : 'h3';
   const { t, lang } = useI18n();
   const name = useVenueName(venue);
   const meta = [t.venue.category[venue.category], areaName(venue, lang)]
@@ -25,7 +33,7 @@ export function VenueCard({ venue }: { venue: VenueListItem }) {
     <li className="venue-card">
       <Link href={`/venue/${venue.id}`} className="venue-card__link">
         <span className="venue-card__text">
-          <h3 className="venue-card__name">{name.shown}</h3>
+          <Heading className="venue-card__name">{name.shown}</Heading>
           <p className="venue-card__meta">{meta}</p>
           <p className="venue-card__rating">
             {venue.google_rating !== null && (

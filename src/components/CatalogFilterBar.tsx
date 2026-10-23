@@ -1,6 +1,9 @@
+import { useCallback, useState } from 'react';
 import { useI18n } from '../i18n/context';
 import type { AreaOption, CatalogFilters, CatalogSort } from '../lib/catalog/filters';
 import type { GeoStatus } from '../lib/useGeolocation';
+import { BottomSheet, SheetOptions } from './BottomSheet';
+import { Icon } from './Icon';
 
 type Props = {
   filters: CatalogFilters;
@@ -10,6 +13,11 @@ type Props = {
   onRequestLocation: () => void;
 };
 
+type SheetId = 'area' | 'sort';
+
+/** «Все районы» в шторке — пустое значение; в фильтре это null. */
+const ALL_AREAS = '';
+
 export function CatalogFilterBar({
   filters,
   onChange,
@@ -18,11 +26,15 @@ export function CatalogFilterBar({
   onRequestLocation,
 }: Props) {
   const { t, lang } = useI18n();
+  const [sheet, setSheet] = useState<SheetId | null>(null);
+  const closeSheet = useCallback(() => setSheet(null), []);
   const set = (patch: Partial<CatalogFilters>) => onChange({ ...filters, ...patch });
   const sorts: CatalogSort[] =
     geoStatus === 'granted'
       ? ['google_rating', 'reviews_count', 'distance']
       : ['google_rating', 'reviews_count'];
+  const areaLabel = (a: AreaOption) => (lang === 'en' ? a.en : null) ?? a.ru;
+  const selectedArea = areas.find((a) => a.value === filters.area);
 
   return (
     <section className="filters" aria-label={t.catalog.filtersLabel}>
@@ -38,7 +50,28 @@ export function CatalogFilterBar({
         spellCheck={false}
         onChange={(e) => set({ query: e.target.value })}
       />
-      <div className="filters__row">
+      {/* Одна полоса чипов с горизонтальной прокруткой: список начинается выше середины экрана. */}
+      <div className="filters__strip">
+        <button
+          type="button"
+          className={filters.area ? 'chip chip--menu chip--on' : 'chip chip--menu'}
+          aria-haspopup="dialog"
+          aria-expanded={sheet === 'area'}
+          onClick={() => setSheet('area')}
+        >
+          {t.catalog.areaChip(selectedArea ? areaLabel(selectedArea) : t.catalog.areaAll)}
+          <Icon name="chevronDown" size={16} />
+        </button>
+        <button
+          type="button"
+          className="chip chip--menu"
+          aria-haspopup="dialog"
+          aria-expanded={sheet === 'sort'}
+          onClick={() => setSheet('sort')}
+        >
+          {t.catalog.sort[filters.sort]}
+          <Icon name="chevronDown" size={16} />
+        </button>
         <button
           type="button"
           className="chip"
@@ -56,44 +89,51 @@ export function CatalogFilterBar({
           {t.catalog.withPhone}
         </button>
       </div>
-      <div className="filters__row">
-        <label className="select">
-          <span className="visually-hidden">{t.catalog.district}</span>
-          <select
-            value={filters.area ?? ''}
-            onChange={(e) => set({ area: e.target.value || null })}
-          >
-            <option value="">{t.catalog.allDistricts}</option>
-            {areas.map((a) => (
-              <option key={a.value} value={a.value}>
-                {(lang === 'en' ? a.en : null) ?? a.ru}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="select">
-          <span className="visually-hidden">{t.catalog.sortLabel}</span>
-          <select
-            value={filters.sort}
-            onChange={(e) => set({ sort: e.target.value as CatalogSort })}
-          >
-            {sorts.map((s) => (
-              <option key={s} value={s}>
-                {t.catalog.sort[s]}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-      {geoStatus === 'idle' && (
-        <button type="button" className="link-button" onClick={onRequestLocation}>
-          {t.catalog.useLocation}
-        </button>
-      )}
       {geoStatus === 'pending' && (
         <p className="hint" role="status">
           {t.catalog.locating}
         </p>
+      )}
+
+      {sheet === 'area' && (
+        <BottomSheet title={t.catalog.district} onClose={closeSheet}>
+          <SheetOptions
+            options={[
+              { value: ALL_AREAS, label: t.catalog.allDistricts },
+              ...areas.map((a) => ({ value: a.value, label: areaLabel(a) })),
+            ]}
+            value={filters.area ?? ALL_AREAS}
+            onSelect={(value) => {
+              set({ area: value || null });
+              closeSheet();
+            }}
+          />
+        </BottomSheet>
+      )}
+      {sheet === 'sort' && (
+        <BottomSheet title={t.catalog.sortLabel} onClose={closeSheet}>
+          <SheetOptions
+            options={sorts.map((s) => ({ value: s, label: t.catalog.sort[s] }))}
+            value={filters.sort}
+            onSelect={(sort) => {
+              set({ sort });
+              closeSheet();
+            }}
+          />
+          {/* Сортировка по расстоянию появляется после разрешения геолокации. */}
+          {geoStatus === 'idle' && (
+            <button
+              type="button"
+              className="link-button sheet__extra"
+              onClick={() => {
+                onRequestLocation();
+                closeSheet();
+              }}
+            >
+              {t.catalog.useLocation}
+            </button>
+          )}
+        </BottomSheet>
       )}
     </section>
   );

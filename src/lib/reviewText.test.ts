@@ -65,6 +65,20 @@ describe('pickReviewText (rules 3–4)', () => {
     expect(pickReviewText(emoji, 'ru', false)).toEqual({ text: '👍👍', label: null, toggle: null });
   });
 
+  it('shows texts without letters (emoji, digits, signs) without «translation soon»', () => {
+    for (const text of ['👍👍', '10/10 !!!', '❤️ 5+', '🐶🐱 :)']) {
+      const review = makeReview({ text, text_lang: 'th', text_ru: null, needs_ru: true });
+      expect(pickReviewText(review, 'ru', false)).toEqual({ text, label: null, toggle: null });
+    }
+  });
+
+  it('keeps «translation soon» when the original has letters of any script', () => {
+    for (const text of ['ดีมาก 👍', 'Good!', '很好', 'ok 10/10']) {
+      const review = makeReview({ text, text_lang: 'th', text_ru: null, needs_ru: true });
+      expect(pickReviewText(review, 'ru', false)?.label).toBe('soon');
+    }
+  });
+
   it('returns null for rating-only reviews', () => {
     expect(pickReviewText(makeReview({ text: null }), 'ru', false)).toBeNull();
     expect(pickReviewText(makeReview({ text: '  ' }), 'ru', false)).toBeNull();

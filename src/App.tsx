@@ -47,8 +47,9 @@ function Shell() {
   return (
     <div className={onVenue ? 'app app--venue' : 'app'}>
       <header className="app-header">
-        {/* Крупный заголовок — название раздела; «Lapa» остаётся в заголовке вкладки браузера. */}
-        <h1 className={onVenue ? 'visually-hidden' : 'app-title'}>{t.tabs[tab]}</h1>
+        {/* Крупный заголовок — название раздела; «Lapa» остаётся в заголовке вкладки браузера.
+            На карточке h1 — название заведения (VenueScreen). */}
+        {!onVenue && <h1 className="app-title">{t.tabs[tab]}</h1>}
         <LangSwitch />
       </header>
       {source.mode === 'sample' && (

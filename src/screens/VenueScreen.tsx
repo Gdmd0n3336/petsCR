@@ -25,12 +25,25 @@ export function VenueScreen({ id, onBack }: { id: string; onBack: () => void }) 
       {t.venue.back}
     </button>
   );
-  if (status === 'loading') return <ScreenState status="loading" />;
-  if (status === 'error') return <ScreenState status="error" onRetry={retry} />;
+  // h1 карточки — название заведения; пока его нет, у экрана скрытый h1 раздела.
+  const sectionTitle = <h1 className="visually-hidden">{t.tabs.catalog}</h1>;
+  if (status === 'loading' || status === 'error') {
+    return (
+      <>
+        {sectionTitle}
+        {status === 'loading' ? (
+          <ScreenState status="loading" />
+        ) : (
+          <ScreenState status="error" onRetry={retry} />
+        )}
+      </>
+    );
+  }
   const venue = venues.find((v) => v.id === id);
   if (!venue) {
     return (
       <div className="stack">
+        {sectionTitle}
         {back}
         <ScreenState status="empty" message={t.venue.notFound} />
       </div>
@@ -112,7 +125,7 @@ function VenueHeading({ venue }: { venue: Venue }) {
   const name = useVenueName(venue);
   return (
     <>
-      <h2 className="venue__name">{name.shown}</h2>
+      <h1 className="venue__name">{name.shown}</h1>
       <VenueNameToggle name={name} />
     </>
   );

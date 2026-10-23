@@ -118,7 +118,7 @@ describe('catalog map', () => {
   it('shows a placeholder and the working list without a key, and never loads Google', async () => {
     renderWithProviders(<Harness />, { source: memorySource(venues) });
     expect(await screen.findByText(ru.map.noKey)).toBeInTheDocument();
-    expect(screen.getByRole('heading', { level: 3, name: 'Alpha Vet' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'Alpha Vet' })).toBeInTheDocument();
     expect(loader.importLibrary).not.toHaveBeenCalled();
   });
 
@@ -196,7 +196,7 @@ describe('catalog map', () => {
     loader.importLibrary.mockRejectedValue(new Error('network'));
     renderWithProviders(<Harness />, { source: memorySource(venues) });
     expect(await screen.findByText(ru.map.unavailable)).toBeInTheDocument();
-    expect(screen.getByRole('heading', { level: 3, name: 'Beta Pet' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'Beta Pet' })).toBeInTheDocument();
   });
 
   it('falls back to the list when Google rejects the key', async () => {
