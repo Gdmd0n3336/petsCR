@@ -6,9 +6,14 @@ export const LANGS: readonly Lang[] = ['ru', 'en'];
 export const MESSAGES: Record<Lang, Messages> = { ru, en };
 const STORAGE_KEY = 'lapa.lang';
 
-/** Первый выбор — язык браузера (в Telegram WebView — язык устройства); initData не используем. */
+/** Первый выбор вне Telegram — язык браузера. */
 export function detectLang(browserLangs: readonly string[]): Lang {
   return browserLangs[0]?.toLowerCase().startsWith('en') ? 'en' : 'ru';
+}
+
+/** Первый запуск в Telegram: русский, если язык клиента русский или не определён, иначе английский. */
+export function detectTelegramLang(languageCode: string | undefined): Lang {
+  return !languageCode || languageCode.toLowerCase().startsWith('ru') ? 'ru' : 'en';
 }
 
 /** Хранилище может быть недоступно (приватный режим, WebView): тогда язык просто не запоминается. */

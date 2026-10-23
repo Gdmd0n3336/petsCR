@@ -20,11 +20,13 @@ export function venueWebUrl(venueId: string, base = readConfig().publicBaseUrl):
 }
 
 /**
- * Ссылка на карточку для «Поделиться». Точка расширения: когда у бота будет короткое имя Mini App,
- * здесь будет t.me/<bot>/<app>?startapp=venue_<id> (и разбор startapp при запуске).
+ * Ссылка на карточку для «Поделиться»: при заданном VITE_TELEGRAM_BOT — главное Mini App бота
+ * t.me/<бот>?startapp=venue_<id> (карточку открывает разбор start_param в main.tsx),
+ * иначе веб-адрес карточки.
  */
-export function venueShareTarget(venueId: string): string {
-  return venueWebUrl(venueId);
+export function venueShareTarget(venueId: string, bot = readConfig().telegramBot): string {
+  if (!bot) return venueWebUrl(venueId);
+  return `https://t.me/${bot}?startapp=${encodeURIComponent(`venue_${venueId}`)}`;
 }
 
 /** Окно «Поделиться» Telegram (работает и из браузера). */

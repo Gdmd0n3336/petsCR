@@ -7,7 +7,16 @@ describe('readConfig', () => {
       mapsApiKey: null,
       mapsMapId: 'DEMO_MAP_ID',
       publicBaseUrl: null,
+      telegramBot: null,
     });
+  });
+
+  it('accepts a Telegram bot name with or without @ and ignores invalid names', () => {
+    expect(readConfig({ VITE_TELEGRAM_BOT: 'lapa_pets_bot' }).telegramBot).toBe('lapa_pets_bot');
+    expect(readConfig({ VITE_TELEGRAM_BOT: ' @LapaBot ' }).telegramBot).toBe('LapaBot');
+    for (const bad of ['', 'ab', 'lapa bot', 'https://t.me/lapa_bot', '1lapabot', 'lapa/bot?x']) {
+      expect(readConfig({ VITE_TELEGRAM_BOT: bad }).telegramBot).toBeNull();
+    }
   });
 
   it('needs both Supabase variables to switch to live mode', () => {
@@ -31,6 +40,7 @@ describe('test environment', () => {
       mapsApiKey: null,
       mapsMapId: 'DEMO_MAP_ID',
       publicBaseUrl: null,
+      telegramBot: null,
     });
   });
 });

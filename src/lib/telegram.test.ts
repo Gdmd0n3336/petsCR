@@ -62,6 +62,41 @@ describe('initTelegram', () => {
   });
 });
 
+describe('launch parameters', () => {
+  it('reads start_param and the Telegram language from the launch params', async () => {
+    const withStart = new URLSearchParams({
+      tgWebAppPlatform: 'ios',
+      tgWebAppVersion: '8.0',
+      tgWebAppThemeParams: JSON.stringify({ bg_color: '#ffffff' }),
+      tgWebAppStartParam: 'venue_4fcfde65-cd97-44a5-ad99-951c7add4b97',
+      tgWebAppData: new URLSearchParams({
+        user: JSON.stringify({ id: 1, first_name: 'Test', language_code: 'th' }),
+        auth_date: '1700000000',
+        hash: 'h',
+        signature: 's',
+        start_param: 'venue_4fcfde65-cd97-44a5-ad99-951c7add4b97',
+      }).toString(),
+    });
+    mockTelegramEnv({ launchParams: withStart, onEvent: () => {}, resetPostMessage: true });
+    const { initTelegram } = await loadTelegram();
+    expect(initTelegram()).toEqual({
+      inTelegram: true,
+      startParam: 'venue_4fcfde65-cd97-44a5-ad99-951c7add4b97',
+      languageCode: 'th',
+    });
+  });
+
+  it('accepts only venue_<id> start params', async () => {
+    const { venueIdFromStartParam } = await loadTelegram();
+    expect(venueIdFromStartParam('venue_4fcfde65-cd97-44a5-ad99-951c7add4b97')).toBe(
+      '4fcfde65-cd97-44a5-ad99-951c7add4b97',
+    );
+    for (const bad of [undefined, '', 'venue_', 'venue_../x', 'promo_1', 'venue_a b', 'xvenue_1']) {
+      expect(venueIdFromStartParam(bad)).toBeNull();
+    }
+  });
+});
+
 describe('openInTelegram', () => {
   it('returns false outside Telegram so the regular link opens', async () => {
     const { openInTelegram } = await loadTelegram();

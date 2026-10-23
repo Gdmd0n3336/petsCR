@@ -22,6 +22,13 @@ describe('links', () => {
     expect(venueShareTarget('v 1')).toMatch(/#\/venue\/v%201$/);
   });
 
+  it('shares t.me/<bot>?startapp=venue_<id> when the bot is configured', () => {
+    expect(venueShareTarget('4fcfde65-cd97-44a5-ad99-951c7add4b97', 'lapa_pets_bot')).toBe(
+      'https://t.me/lapa_pets_bot?startapp=venue_4fcfde65-cd97-44a5-ad99-951c7add4b97',
+    );
+    expect(venueShareTarget('v1', null)).toMatch(/#\/venue\/v1$/);
+  });
+
   it('builds a Telegram share link', () => {
     expect(telegramShareUrl('https://lapa.example/#/venue/v1', 'Vet')).toBe(
       'https://t.me/share/url?url=https%3A%2F%2Flapa.example%2F%23%2Fvenue%2Fv1&text=Vet',

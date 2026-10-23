@@ -16,6 +16,7 @@
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | там же, publishable-ключ (**не** `service_role`!) |
 | `VITE_GOOGLE_MAPS_API_KEY` | Google Cloud → APIs & Services → Credentials → ключ Maps JavaScript API |
 | `VITE_GOOGLE_MAPS_MAP_ID` | Google Cloud → Google Maps Platform → Map Management → ваш Map ID |
+| `VITE_TELEGRAM_BOT` | имя бота без `@` (не секрет), см. раздел «Бот Telegram» ниже; пусто — «Поделиться» ведёт на веб-адрес |
 | `DO_NOT_TRACK` | значение `1` (не секрет): отключает телеметрию инструментов сборки, которые учитывают этот стандарт; в приложение не попадает |
 
 Все четыре значения по своей природе видны в браузере пользователя: это нормально для publishable-ключа Supabase (данные защищены правилами доступа в базе) и для ключа карты (его защищают ограничения в Google Cloud, см. шаг 8). Ключ `service_role` сюда класть нельзя никогда.
@@ -137,7 +138,7 @@ Cloudflare умеет собирать отдельную копию прило�
 | Build output directory | `dist` |
 | Root directory | пусто |
 
-**Переменные сборки** (Settings → Variables and Secrets, тип Plaintext, для Production и при необходимости Preview): `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_GOOGLE_MAPS_API_KEY`, `VITE_GOOGLE_MAPS_MAP_ID`, `DO_NOT_TRACK=1` и **`NODE_VERSION=22`** — по умолчанию в сборке Pages стоит Node.js 18, а проекту нужен 22. После изменения переменных — новая сборка (Deployments → Retry deployment).
+**Переменные сборки** (Settings → Variables and Secrets, тип Plaintext, для Production и при необходимости Preview): `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_GOOGLE_MAPS_API_KEY`, `VITE_GOOGLE_MAPS_MAP_ID`, `VITE_TELEGRAM_BOT`, `DO_NOT_TRACK=1` и **`NODE_VERSION=22`** — по умолчанию в сборке Pages стоит Node.js 18, а проекту нужен 22. После изменения переменных — новая сборка (Deployments → Retry deployment).
 
 **Ключ Google** (шаг 8), записи для Pages:
 
@@ -150,6 +151,15 @@ Cloudflare умеет собирать отдельную копию прило�
 
 Маршруты: в сборке нет файла `404.html`, поэтому Pages отдаёт приложение на любой путь (режим одностраничного приложения); маршруты приложения к тому же живут после `#`.
 
+## Бот Telegram и ссылки на карточки
+
+1. В @BotFather у бота настройте **главное Mini App** (Main Mini App) с адресом приложения, например `https://lapa-app.pages.dev`.
+2. В переменные сборки добавьте `VITE_TELEGRAM_BOT` = имя бота без `@` и пересоберите.
+3. Кнопка «Поделиться» на карточке даёт ссылку `https://t.me/<бот>?startapp=venue_<id>`. Telegram передаёт `venue_<id>` в приложение (`start_param`), и оно сразу открывает карточку. Другие значения `startapp` игнорируются.
+4. Язык при первом запуске в Telegram: русский, если язык Telegram русский или не определён, иначе английский. Дальше действует выбор RU/EN в шапке.
+
+Проверка: откройте ссылку из «Поделиться» в Telegram — должна открыться карточка того же заведения, «Назад» ведёт в каталог.
+
 ## Источники
 
 - Workers Builds, подключение репозитория и настройки сборки: <https://developers.cloudflare.com/workers/ci-cd/builds/> и <https://developers.cloudflare.com/workers/ci-cd/builds/configuration/>
@@ -157,5 +167,6 @@ Cloudflare умеет собирать отдельную копию прило�
 - Версия Node.js в сборке (`.nvmrc`): <https://developers.cloudflare.com/workers/ci-cd/builds/build-image/>
 - Статические файлы и режим SPA: <https://developers.cloudflare.com/workers/static-assets/routing/single-page-application/>
 - Адреса предпросмотров: <https://developers.cloudflare.com/workers/previews/> и <https://developers.cloudflare.com/workers/configuration/previews/>
+- Главное Mini App и ссылки `t.me/<бот>?startapp=…`: <https://core.telegram.org/bots/webapps#launching-the-main-mini-app>
 - Pages: файл Wrangler и `pages_build_output_dir` — <https://developers.cloudflare.com/pages/functions/wrangler-configuration/>; версия Node.js в сборке — <https://developers.cloudflare.com/pages/configuration/build-image/>; адреса предпросмотров — <https://developers.cloudflare.com/pages/configuration/preview-deployments/>; режим SPA — <https://developers.cloudflare.com/pages/configuration/serving-pages/>
 - Ограничения ключа Google по адресам: <https://cloud.google.com/api-keys/docs/add-restrictions-api-keys>

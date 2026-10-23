@@ -1,6 +1,7 @@
 import { en } from './en';
 import {
   detectLang,
+  detectTelegramLang,
   formatDate,
   formatRating,
   initialLang,
@@ -55,5 +56,17 @@ describe('locale', () => {
     expect(ru.venue.google('4,6', 3)).toBe('Google 4,6 · 3 отзыва');
     expect(ru.venue.google('4,6', 707)).toBe('Google 4,6 · 707 отзывов');
     expect(en.venue.google('4.6', 1)).toBe('Google 4.6 · 1 review');
+  });
+});
+
+describe('detectTelegramLang (first launch in Telegram)', () => {
+  it('is Russian for ru or an unknown language, English otherwise', () => {
+    expect(detectTelegramLang('ru')).toBe('ru');
+    expect(detectTelegramLang('RU')).toBe('ru');
+    expect(detectTelegramLang(undefined)).toBe('ru');
+    expect(detectTelegramLang('')).toBe('ru');
+    expect(detectTelegramLang('en')).toBe('en');
+    expect(detectTelegramLang('th')).toBe('en');
+    expect(detectTelegramLang('uk')).toBe('en');
   });
 });
