@@ -12,7 +12,9 @@ export default defineConfig({
   use: {
     baseURL: `http://localhost:${PORT}/`,
     locale: 'ru-RU',
-    // Локально можно указать уже установленный Chromium (в CI — `playwright install chromium`).
+    // В CI — Google Chrome, уже установленный на ubuntu-latest (установка Chromium с зависимостями
+    // занимала 8 минут). Локально — свой Chromium Playwright или путь из PLAYWRIGHT_CHROMIUM_PATH.
+    ...(process.env.CI ? { channel: 'chrome' } : {}),
     launchOptions: process.env.PLAYWRIGHT_CHROMIUM_PATH
       ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH }
       : {},
