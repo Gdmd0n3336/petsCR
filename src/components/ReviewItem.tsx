@@ -14,7 +14,7 @@ export function ReviewItem({ review }: { review: Review }) {
   const short = view && !expanded ? shortenText(view.text) : null;
 
   return (
-    <li className="card review">
+    <li className="review">
       <div className="review__head">
         <span className="review__author">{review.author_display ?? t.reviews.anonymous}</span>
         {review.review_date && (

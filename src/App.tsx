@@ -10,6 +10,7 @@ import { CatalogContext, useCatalogSource } from './lib/catalog/context';
 import { DEFAULT_FILTERS } from './lib/catalog/filters';
 import type { CatalogSource } from './lib/catalog/types';
 import { useGeolocation } from './lib/useGeolocation';
+import { ThemeProvider } from './theme/ThemeProvider';
 import { BookingsScreen } from './screens/BookingsScreen';
 import { CatalogScreen } from './screens/CatalogScreen';
 import { NearbyScreen } from './screens/NearbyScreen';
@@ -40,11 +41,14 @@ function Shell() {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const geo = useGeolocation();
   const tab = activeTab(location);
+  // На карточке заведения нижняя панель скрыта: внизу закреплена кнопка записи (DESIGN.md §4).
+  const onVenue = Boolean(venueParams);
 
   return (
-    <div className="app">
+    <div className={onVenue ? 'app app--venue' : 'app'}>
       <header className="app-header">
-        <h1>{t.appName}</h1>
+        {/* Крупный заголовок — название раздела; «Lapa» остаётся в заголовке вкладки браузера. */}
+        <h1 className={onVenue ? 'visually-hidden' : 'app-title'}>{t.tabs[tab]}</h1>
         <LangSwitch />
       </header>
       {source.mode === 'sample' && (
@@ -82,7 +86,7 @@ function Shell() {
           </Route>
         </Switch>
       </main>
-      <TabBar active={tab} onChange={(next) => navigate(TAB_PATHS[next])} />
+      {!onVenue && <TabBar active={tab} onChange={(next) => navigate(TAB_PATHS[next])} />}
     </div>
   );
 }
@@ -91,11 +95,13 @@ function Shell() {
 export default function App({ source }: { source?: CatalogSource }) {
   return (
     <I18nProvider>
-      <CatalogContext.Provider value={source ?? null}>
-        <Router hook={useHashLocation}>
-          <Shell />
-        </Router>
-      </CatalogContext.Provider>
+      <ThemeProvider>
+        <CatalogContext.Provider value={source ?? null}>
+          <Router hook={useHashLocation}>
+            <Shell />
+          </Router>
+        </CatalogContext.Provider>
+      </ThemeProvider>
     </I18nProvider>
   );
 }

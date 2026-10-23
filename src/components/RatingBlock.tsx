@@ -10,7 +10,7 @@ export function RatingBlock({ venue }: { venue: Venue }) {
 
   return (
     <section className="ratings" aria-label={t.venue.ratingsTitle}>
-      <div className="card rating" data-testid="rating-google">
+      <div className="rating" data-testid="rating-google">
         {rating !== null && <Stars value={rating} showNumber={false} />}
         <p className="rating__value">
           {rating !== null
@@ -21,7 +21,7 @@ export function RatingBlock({ venue }: { venue: Venue }) {
         </p>
         <p className="rating__source">{t.venue.googleSource}</p>
       </div>
-      <div className="card rating" data-testid="rating-collected">
+      <div className="rating" data-testid="rating-collected">
         {collected?.avgRating != null && <Stars value={collected.avgRating} showNumber={false} />}
         <p className="rating__value">
           {collected && collected.reviewsCount > 0 && collected.avgRating !== null

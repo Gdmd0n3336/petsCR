@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ExternalLink } from '../components/ExternalLink';
+import { Icon } from '../components/Icon';
 import { OpeningHours } from '../components/OpeningHours';
 import { RatingBlock } from '../components/RatingBlock';
 import { ReviewList } from '../components/ReviewList';
@@ -20,7 +21,8 @@ export function VenueScreen({ id, onBack }: { id: string; onBack: () => void }) 
 
   const back = (
     <button type="button" className="link-button back-button" onClick={onBack}>
-      ← {t.venue.back}
+      <Icon name="chevronLeft" size={22} />
+      {t.venue.back}
     </button>
   );
   if (status === 'loading') return <ScreenState status="loading" />;
@@ -79,24 +81,27 @@ export function VenueScreen({ id, onBack }: { id: string; onBack: () => void }) 
           {t.venue.share}
         </ExternalLink>
       </nav>
-      <button type="button" className="button button--wide" onClick={() => setSoonOpen(true)}>
-        {t.venue.book}
-      </button>
 
       {venue.address && (
-        <section className="card">
+        <section className="group group--padded">
           <h2 className="section-title">{t.venue.address}</h2>
           <p>{venue.address}</p>
         </section>
       )}
       {venue.opening_hours && (
-        <section className="card">
+        <section className="group group--padded">
           <h2 className="section-title">{t.venue.hours}</h2>
           <OpeningHours raw={venue.opening_hours} />
         </section>
       )}
 
       <ReviewList venueId={venue.id} />
+      {/* Закреплённая внизу кнопка (DESIGN.md §4); нижняя панель на карточке скрыта. */}
+      <div className="venue-cta">
+        <button type="button" className="button button--wide" onClick={() => setSoonOpen(true)}>
+          {t.venue.book}
+        </button>
+      </div>
       {soonOpen && <SoonDialog onClose={() => setSoonOpen(false)} />}
     </article>
   );

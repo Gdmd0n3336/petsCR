@@ -1,12 +1,13 @@
-/* Только подмножества latin и cyrillic (variable-пакеты Fontsource не дают CSS по подмножествам).
-   unicode-range скопированы из index.css пакетов @fontsource-variable; тайский добавим позже. */
+/* Шрифты по design/DESIGN.md §3: Inter (latin, cyrillic) и Noto Sans Thai (thai), самохостинг.
+   Только нужные подмножества: variable-пакеты Fontsource не дают CSS по подмножествам, поэтому
+   @font-face свои, unicode-range скопированы из index.css пакетов @fontsource-variable 5.3.0. */
 
 @font-face {
-  font-family: 'Manrope Variable';
+  font-family: 'Inter Variable';
   font-style: normal;
   font-display: swap;
-  font-weight: 200 800;
-  src: url('@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2')
+  font-weight: 100 900;
+  src: url('@fontsource-variable/inter/files/inter-latin-wght-normal.woff2')
     format('woff2-variations');
   unicode-range:
     U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
@@ -14,33 +15,21 @@
 }
 
 @font-face {
-  font-family: 'Manrope Variable';
+  font-family: 'Inter Variable';
   font-style: normal;
   font-display: swap;
-  font-weight: 200 800;
-  src: url('@fontsource-variable/manrope/files/manrope-cyrillic-wght-normal.woff2')
+  font-weight: 100 900;
+  src: url('@fontsource-variable/inter/files/inter-cyrillic-wght-normal.woff2')
     format('woff2-variations');
   unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }
 
 @font-face {
-  font-family: 'Onest Variable';
+  font-family: 'Noto Sans Thai Variable';
   font-style: normal;
   font-display: swap;
   font-weight: 100 900;
-  src: url('@fontsource-variable/onest/files/onest-latin-wght-normal.woff2')
+  src: url('@fontsource-variable/noto-sans-thai/files/noto-sans-thai-thai-wght-normal.woff2')
     format('woff2-variations');
-  unicode-range:
-    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
-    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
-  font-family: 'Onest Variable';
-  font-style: normal;
-  font-display: swap;
-  font-weight: 100 900;
-  src: url('@fontsource-variable/onest/files/onest-cyrillic-wght-normal.woff2')
-    format('woff2-variations');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+  unicode-range: U+02D7, U+0303, U+0331, U+0E01-0E5B, U+200C-200D, U+25CC;
 }
