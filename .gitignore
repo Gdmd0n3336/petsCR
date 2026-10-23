@@ -17,3 +17,7 @@ coverage/
 
 # кеш Python (скрипты вендоренных скиллов)
 __pycache__/
+
+# отчёты Playwright
+/test-results/
+/playwright-report/

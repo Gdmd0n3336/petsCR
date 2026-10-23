@@ -32,3 +32,6 @@ jobs:
       # Сборка без переменных: нет ключей Google и адресов Supabase, образец данных в отдельном чанке.
       - run: npm run check:bundle
       - run: npm audit --audit-level=high
+      # Раскладка в браузере: нет горизонтального переполнения на всех экранах (e2e/).
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e

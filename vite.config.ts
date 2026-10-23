@@ -1,4 +1,4 @@
-/// <reference types="vitest/config" />
+import { configDefaults } from 'vitest/config';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
@@ -8,6 +8,8 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
+    // Браузерные тесты Playwright (e2e/) запускает `npm run test:e2e`.
+    exclude: [...configDefaults.exclude, 'e2e/**'],
     restoreMocks: true,
     // Тесты не зависят от переменных среды разработчика: без ключей и без сети.
     env: {
@@ -16,6 +18,7 @@ export default defineConfig({
       VITE_GOOGLE_MAPS_API_KEY: '',
       VITE_GOOGLE_MAPS_MAP_ID: '',
       VITE_PUBLIC_BASE_URL: '',
+      VITE_TELEGRAM_BOT: '',
     },
   },
 });
