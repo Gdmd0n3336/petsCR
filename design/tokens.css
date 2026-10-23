@@ -1,0 +1,52 @@
+/* Lapa design tokens. Две палитры на одной структуре (вариант A «Тишина» как основа).
+   Переключение: document.documentElement.dataset.theme = 'tishina' | 'teplo'. По умолчанию tishina.
+   Все пары цветов текста проверены на контраст не ниже 4,5:1 (см. DESIGN.md, раздел 2). */
+:root,
+[data-theme="tishina"] {
+  --stage: #DDE2E1;          /* фон вокруг макетов, в приложении не используется */
+  --ground: #F4F6F5;         /* фон экрана */
+  --surface: #FFFFFF;        /* карточки, группы, поля */
+  --ink: #0E1B1A;            /* основной текст */
+  --sub: #4A5A58;            /* второстепенный текст */
+  --tint: #0E6B73;           /* единственный акцентный цвет: кнопки, ссылки, активные вкладки */
+  --on-tint: #FFFFFF;        /* текст и значки на акцентном фоне */
+  --tint-bg: #E2F0F1;        /* мягкая подложка акцента */
+  --line: #E6EBEA;           /* тонкие разделители внутри групп */
+  --bar-line: #DDE3E2;       /* линия над/под панелями */
+  --seg-bg: #E4E9E8;         /* фон переключателей */
+  --chip-line: #D3DBDA;      /* граница чипов фильтров */
+  --tab-off: #5C6D6A;        /* неактивная вкладка */
+  --tab-bg: rgba(255,255,255,.9);
+  --cta-bg: rgba(244,246,245,.94);
+  --badge-bg: #E2F0F1;
+  --badge-ink: #0A5A61;
+  --star: #C77700;           /* звёзды рейтинга (декор, рядом всегда число) */
+  --ring: rgba(14,27,26,.14);
+  --grab: #CBD3D2;
+  --map-sea: #CFE3EA; --map-land: #EEF1EE; --map-park: #DCEADC; --map-road: #FFFFFF; --map-casing: #DCE1DF;
+  --me: #2F6FDE;             /* точка «Вы здесь» одинакова в обеих палитрах */
+}
+[data-theme="teplo"] {
+  --stage: #F2E3CF;
+  --ground: #FFF6EA;
+  --surface: #FFFFFF;
+  --ink: #3A2A1E;
+  --sub: #6B5646;
+  --tint: #B8461A;
+  --on-tint: #FFFFFF;
+  --tint-bg: #FCE9DC;
+  --line: #F0DFCB;
+  --bar-line: #EBDCC6;
+  --seg-bg: #F7E7D2;
+  --chip-line: #E6D2B8;
+  --tab-off: #6B5646;
+  --tab-bg: rgba(255,255,255,.92);
+  --cta-bg: rgba(255,246,234,.95);
+  --badge-bg: #DDF1EE;
+  --badge-ink: #0B5F58;
+  --star: #C77700;
+  --ring: rgba(90,55,25,.16);
+  --grab: #E8D5BC;
+  --map-sea: #BFE0E6; --map-land: #FBF1E2; --map-park: #D9EBD5; --map-road: #FFFFFF; --map-casing: #EBDCC6;
+  --me: #2F6FDE;
+}

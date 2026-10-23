@@ -9,3 +9,5 @@ bulletproof-main.zip
 src/types/database.types.ts
 # Образец данных от владельца: храним байт в байт.
 fixtures/
+# Дизайн-система от владельца (design/): храним байт в байт.
+design/

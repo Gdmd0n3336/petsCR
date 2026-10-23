@@ -11,7 +11,11 @@
       "Bash(*impeccable* generate-image*)",
       "Skill(impeccable hooks on*)",
       "Skill(impeccable live*)",
-      "Skill(impeccable generate*)"
+      "Skill(impeccable generate*)",
+      "Write(/DESIGN.md)",
+      "Edit(/DESIGN.md)",
+      "Write(/PRODUCT.md)",
+      "Edit(/PRODUCT.md)"
     ]
   },
   "hooks": {
