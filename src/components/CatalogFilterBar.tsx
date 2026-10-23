@@ -89,11 +89,6 @@ export function CatalogFilterBar({
           {t.catalog.withPhone}
         </button>
       </div>
-      {geoStatus === 'idle' && (
-        <button type="button" className="link-button" onClick={onRequestLocation}>
-          {t.catalog.useLocation}
-        </button>
-      )}
       {geoStatus === 'pending' && (
         <p className="hint" role="status">
           {t.catalog.locating}
@@ -125,6 +120,19 @@ export function CatalogFilterBar({
               closeSheet();
             }}
           />
+          {/* Сортировка по расстоянию появляется после разрешения геолокации. */}
+          {geoStatus === 'idle' && (
+            <button
+              type="button"
+              className="link-button sheet__extra"
+              onClick={() => {
+                onRequestLocation();
+                closeSheet();
+              }}
+            >
+              {t.catalog.useLocation}
+            </button>
+          )}
         </BottomSheet>
       )}
     </section>

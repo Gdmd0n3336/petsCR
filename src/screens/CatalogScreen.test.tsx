@@ -118,6 +118,11 @@ describe('CatalogScreen', () => {
     await user.click(await screen.findByRole('button', { name: ru.catalog.sort.google_rating }));
     const sheet = screen.getByRole('dialog', { name: ru.catalog.sortLabel });
     expect(within(sheet).queryByRole('button', { name: ru.catalog.sort.distance })).toBeNull();
+    // «Учесть, где я» — в шторке сортировки, а не отдельной строкой над списком
+    await user.click(within(sheet).getByRole('button', { name: ru.catalog.useLocation }));
+    expect(geo.request).toHaveBeenCalled();
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(screen.getByRole('button', { name: ru.catalog.sort.distance })).toBeInTheDocument();
   });
 
   it('shows loading, then error with retry', async () => {

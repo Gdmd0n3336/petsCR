@@ -811,6 +811,10 @@ p {
   font-weight: 600;
 }
 
+.sheet__extra {
+  margin-top: 4px;
+}
+
 .sheet__check {
   flex: none;
   color: var(--tint);
