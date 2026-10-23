@@ -9,6 +9,9 @@ export type ReviewTextView = {
   toggle: 'showOriginal' | 'showTranslation' | null;
 };
 
+/** Буква любой письменности (латиница, кириллица, тайский, иероглифы). */
+const HAS_LETTER = /\p{L}/u;
+
 /**
  * Правила показа 3–4. Функция только выбирает между готовыми text_ru / text_en и оригиналом:
  * своего «перевода» она не создаёт. Нет текста — null (отзыв из одной оценки).
@@ -32,8 +35,11 @@ export function pickReviewText(
       ? { text: original, label: 'original', toggle: 'showTranslation' }
       : { text: translation, label: 'auto', toggle: 'showOriginal' };
   }
-  // Перевод совпал с оригиналом (эмодзи, цифры) или не нужен (needs = false) — показываем как есть.
-  if (translation || needs === false) return { text: original, label: null, toggle: null };
+  // Перевод совпал с оригиналом, не нужен (needs = false) или переводить нечего (в тексте нет букв:
+  // эмодзи, цифры, знаки) — показываем как есть, без «Перевод скоро».
+  if (translation || needs === false || !HAS_LETTER.test(original)) {
+    return { text: original, label: null, toggle: null };
+  }
   return { text: original, label: 'soon', toggle: null };
 }
 
