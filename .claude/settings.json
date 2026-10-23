@@ -1,4 +1,19 @@
 {
+  "permissions": {
+    "deny": [
+      "Bash(*impeccable/scripts/impeccable*)",
+      "Bash(*.impeccable/bin/*)",
+      "Bash(impeccable)",
+      "Bash(impeccable *)",
+      "Bash(*IMPECCABLE_BIN*)",
+      "Bash(*impeccable* hooks on*)",
+      "Bash(*impeccable* live*)",
+      "Bash(*impeccable* generate-image*)",
+      "Skill(impeccable hooks on*)",
+      "Skill(impeccable live*)",
+      "Skill(impeccable generate*)"
+    ]
+  },
   "hooks": {
     "PreToolUse": [
       {
