@@ -123,6 +123,33 @@ Cloudflare умеет собирать отдельную копию прило�
 - Переменные сборки вписываются только в панели Cloudflare.
 - Перед каждой выкладкой в GitHub проверяется, что в сборке без переменных нет ключей (`npm run check:bundle` в CI).
 
+## Вариант Pages (так выкладывает владелец)
+
+Приложение выложено через **Cloudflare Pages**: адрес `https://lapa-app.pages.dev`. Это равноценная замена шагам 1–7 выше (Workers); шаги 7 «Проверить» и 8 «Ключ Google» остаются в силе с адресами Pages.
+
+Настройки проекта Pages (Workers & Pages → Create → Pages → Connect to Git → репозиторий `petsCR`):
+
+| Поле | Значение |
+|---|---|
+| Production branch | `main` |
+| Framework preset | `None` (или `Vite`, если предложит) |
+| Build command | `npm run build` |
+| Build output directory | `dist` |
+| Root directory | пусто |
+
+**Переменные сборки** (Settings → Variables and Secrets, тип Plaintext, для Production и при необходимости Preview): `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, `VITE_GOOGLE_MAPS_API_KEY`, `VITE_GOOGLE_MAPS_MAP_ID`, `DO_NOT_TRACK=1` и **`NODE_VERSION=22`** — по умолчанию в сборке Pages стоит Node.js 18, а проекту нужен 22. После изменения переменных — новая сборка (Deployments → Retry deployment).
+
+**Ключ Google** (шаг 8), записи для Pages:
+
+| Адрес | Зачем |
+|---|---|
+| `https://lapa-app.pages.dev/*` | основной адрес |
+| `https://*.lapa-app.pages.dev/*` | предпросмотры Pages (`<хеш>.lapa-app.pages.dev` и `<ветка>.lapa-app.pages.dev`) |
+
+**`wrangler.jsonc` при выкладке через Pages не используется** и сборке не мешает. По документации Pages файл Wrangler становится конфигурацией проекта Pages (и источником правды вместо панели) только если в нём есть ключ `pages_build_output_dir`. В нашем `wrangler.jsonc` этого ключа нет: он описывает Worker (`assets.directory`), поэтому Pages берёт настройки из панели (таблица выше). В журнале сборки Pages может появиться предупреждение о том, что файл Wrangler найден, но не подходит для Pages и пропущен, — это ожидаемо. Ключ `pages_build_output_dir` в файл не добавлять: тогда панель перестанет управлять настройками проекта.
+
+Маршруты: в сборке нет файла `404.html`, поэтому Pages отдаёт приложение на любой путь (режим одностраничного приложения); маршруты приложения к тому же живут после `#`.
+
 ## Источники
 
 - Workers Builds, подключение репозитория и настройки сборки: <https://developers.cloudflare.com/workers/ci-cd/builds/> и <https://developers.cloudflare.com/workers/ci-cd/builds/configuration/>
@@ -130,4 +157,5 @@ Cloudflare умеет собирать отдельную копию прило�
 - Версия Node.js в сборке (`.nvmrc`): <https://developers.cloudflare.com/workers/ci-cd/builds/build-image/>
 - Статические файлы и режим SPA: <https://developers.cloudflare.com/workers/static-assets/routing/single-page-application/>
 - Адреса предпросмотров: <https://developers.cloudflare.com/workers/previews/> и <https://developers.cloudflare.com/workers/configuration/previews/>
+- Pages: файл Wrangler и `pages_build_output_dir` — <https://developers.cloudflare.com/pages/functions/wrangler-configuration/>; версия Node.js в сборке — <https://developers.cloudflare.com/pages/configuration/build-image/>; адреса предпросмотров — <https://developers.cloudflare.com/pages/configuration/preview-deployments/>; режим SPA — <https://developers.cloudflare.com/pages/configuration/serving-pages/>
 - Ограничения ключа Google по адресам: <https://cloud.google.com/api-keys/docs/add-restrictions-api-keys>
