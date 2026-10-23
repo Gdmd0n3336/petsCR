@@ -5,6 +5,7 @@
 :root {
   --tap-min: 44px;
   --gutter: 20px;
+  --column: 480px;
   --radius-group: 16px;
   --radius-button: 13px;
   --radius-chip: 22px;
@@ -66,6 +67,7 @@ p {
 
 .app-header {
   display: flex;
+  flex-wrap: wrap-reverse;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
@@ -73,6 +75,73 @@ p {
   max-width: 720px;
   margin: 0 auto;
   padding: calc(20px + env(safe-area-inset-top)) var(--gutter) 12px;
+}
+
+.app-header__tools {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+/* ===== Переключатель палитры (DESIGN.md §4) ===== */
+.theme-switch {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 66px;
+  height: var(--tap-min);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.theme-switch__track {
+  position: relative;
+  width: 66px;
+  height: 32px;
+  border-radius: 16px;
+  background: var(--seg-bg);
+}
+
+.theme-switch__dot {
+  position: absolute;
+  top: 11px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+/* Единственное место с фиксированными цветами палитр (DESIGN.md §4): точки показывают обе
+   палитры одновременно. Значения сверяет тест с --tint из design/tokens.css. */
+.theme-switch__dot--tishina {
+  left: 11px;
+  background: #0e6b73;
+}
+
+.theme-switch__dot--teplo {
+  left: 45px;
+  background: #b8461a;
+}
+
+.theme-switch__knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 26px;
+  height: 26px;
+  border: 2px solid var(--surface);
+  border-radius: 50%;
+  background: var(--tint);
+  transition: transform 0.2s ease-out;
+}
+
+.theme-switch[data-palette='teplo'] .theme-switch__knob {
+  transform: translateX(34px);
 }
 
 .app-title {
@@ -1083,6 +1152,7 @@ select {
 .select select:focus-visible,
 .venue-card__link:focus-visible,
 .map-preview__close:focus-visible,
+.theme-switch:focus-visible,
 .sheet__close:focus-visible,
 .sheet__option:focus-visible {
   outline: 2px solid var(--tint);
@@ -1093,11 +1163,33 @@ select {
   .spinner {
     animation: none;
   }
+
+  .theme-switch__knob {
+    transition: none;
+  }
 }
 
-@media (min-width: 900px) {
-  .app-main,
-  .app-header {
-    max-width: 760px;
+/* Компьютер и планшет шире 768: пока нет двух панелей (DESIGN.md §8), приложение — колонка
+   480 px по центру, по бокам нейтральный фон --stage. Фиксированные панели — той же ширины. */
+@media (min-width: 769px) {
+  body {
+    background: var(--stage);
+  }
+
+  .app {
+    max-width: var(--column);
+    margin: 0 auto;
+    border-inline: 1px solid var(--bar-line);
+    background: var(--ground);
+  }
+
+  .tab-bar,
+  .venue-cta {
+    right: calc(50% - var(--column) / 2);
+    left: calc(50% - var(--column) / 2);
+  }
+
+  .sheet {
+    max-width: var(--column);
   }
 }

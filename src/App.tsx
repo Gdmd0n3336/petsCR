@@ -3,6 +3,7 @@ import { Route, Router, Switch, useLocation, useRoute } from 'wouter';
 import { useHashLocation } from 'wouter/use-hash-location';
 import { LangSwitch } from './components/LangSwitch';
 import { TabBar } from './components/TabBar';
+import { ThemeSwitch } from './components/ThemeSwitch';
 import { useI18n } from './i18n/context';
 import { I18nProvider } from './i18n/I18nProvider';
 import type { TabId } from './i18n/ru';
@@ -50,7 +51,10 @@ function Shell() {
         {/* Крупный заголовок — название раздела; «Lapa» остаётся в заголовке вкладки браузера.
             На карточке h1 — название заведения (VenueScreen). */}
         {!onVenue && <h1 className="app-title">{t.tabs[tab]}</h1>}
-        <LangSwitch />
+        <div className="app-header__tools">
+          <ThemeSwitch />
+          <LangSwitch />
+        </div>
       </header>
       {source.mode === 'sample' && (
         <p className="sample-banner" role="note">
