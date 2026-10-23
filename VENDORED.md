@@ -37,6 +37,22 @@
 
 В скилле Impeccable есть штатный запасной путь: если лаунчер не запущен или запрещён, скилл читает `PRODUCT.md`/`DESIGN.md` напрямую и продолжает работу по справочникам `reference/*.md`.
 
+## Движок Impeccable отключён намеренно
+
+Решение Макса (2026-10-23): движок (лаунчер `scripts/impeccable`, `impeccable.cmd` и бинарник) в проекте не запускается.
+
+**Почему:** лаунчер при первом вызове скачивает и запускает непроверенный нативный бинарник; у движка по умолчанию включена телеметрия на `impeccable.style`; `generate-image` ходит в OpenAI; `hooks on` и `live` меняют `.claude/settings.local.json` и `index.html`.
+
+**Как отключено:** `permissions.deny` в `.claude/settings.json`:
+- `Bash(*impeccable/scripts/impeccable*)` — лаунчер (sh и .cmd), в том числе внутри `sh -c` и с переменными окружения впереди;
+- `Bash(*.impeccable/bin/*)`, `Bash(impeccable)`, `Bash(impeccable *)`, `Bash(*IMPECCABLE_BIN*)` — бинарник из кеша, из `PATH` и через `IMPECCABLE_BIN`;
+- `Bash(*impeccable* hooks on*)`, `Bash(*impeccable* live*)`, `Bash(*impeccable* generate-image*)` и `Skill(impeccable hooks on*)`, `Skill(impeccable live*)`, `Skill(impeccable generate*)` — команды, меняющие проект или идущие в сеть;
+- `Write(/DESIGN.md)`, `Edit(/DESIGN.md)`, `Write(/PRODUCT.md)`, `Edit(/PRODUCT.md)` — корневые файлы не создаются, источник правды `design/` (см. `CLAUDE.md`).
+
+**Что работает:** сам скилл (`/impeccable critique|audit|polish …`) виден и вызывается. По его штатному запасному пути («Launcher unavailable») он читает `design/PRODUCT.md` и `design/DESIGN.md` напрямую и работает по справочникам `reference/*.md`. Проверено 2026-10-23: вызов лаунчера отклонён, контекст прочитан из `design/`, `~/.impeccable` не создан.
+
+**Ограничение:** правила Bash в Claude Code сравнивают текст команды; по документации это страховка, а не граница безопасности (вызов в другой форме может не совпасть). Побочный эффект: команды, в тексте которых встречаются эти шаблоны (например, сообщение коммита с «impeccable live»), тоже отклоняются — сообщения коммитов передавать через файл (`git commit -F`).
+
 ## Как вызывать
 
 - **ui-ux-pro-max:** Claude Code подхватывает скилл сам по описанию задачи (дизайн, ревью UI) или по просьбе «используй ui-ux-pro-max». Поиск по базе вручную, из корня проекта:
@@ -45,7 +61,7 @@
   python3 .claude/skills/ui-ux-pro-max/scripts/search.py "veterinary booking app" --design-system -p "Lapa"
   python3 .claude/skills/ui-ux-pro-max/scripts/search.py "list virtualization" --stack react
   ```
-- **impeccable:** команда `/impeccable <команда> [цель]`, например `/impeccable audit src/screens/CatalogScreen.tsx`, `/impeccable critique src/screens/VenueScreen.tsx`, `/impeccable polish src/components/VenueCard.tsx`; без аргумента — меню. Первый вызов запустит лаунчер (см. «Что настораживает», п. 1).
+- **impeccable:** команда `/impeccable <команда> [цель]`, например `/impeccable audit src/screens/CatalogScreen.tsx`, `/impeccable critique src/screens/VenueScreen.tsx`, `/impeccable polish src/components/VenueCard.tsx`; без аргумента — меню. Движок отключён (см. выше): скилл работает по справочникам и `design/`.
 
 ## Обновление (только вручную)
 
