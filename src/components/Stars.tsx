@@ -1,5 +1,6 @@
 import { useI18n } from '../i18n/context';
 import { formatRating } from '../i18n/locale';
+import { Icon } from './Icon';
 
 /** Звёзды — только украшение: смысл передают видимое число и подпись для экранных читалок. */
 export function Stars({ value, showNumber = true }: { value: number; showNumber?: boolean }) {
@@ -9,8 +10,15 @@ export function Stars({ value, showNumber = true }: { value: number; showNumber?
   return (
     <span className="stars" role="img" aria-label={label}>
       <span className="stars__icons" aria-hidden="true">
-        {'★'.repeat(rounded)}
-        <span className="stars__empty">{'★'.repeat(5 - rounded)}</span>
+        {Array.from({ length: 5 }, (_, i) => (
+          <Icon
+            key={i}
+            name="star"
+            size={16}
+            filled
+            className={i < rounded ? 'stars__on' : 'stars__off'}
+          />
+        ))}
       </span>
       {showNumber && (
         <span className="stars__number" aria-hidden="true">

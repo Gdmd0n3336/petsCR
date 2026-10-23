@@ -6,7 +6,8 @@ import { ru } from './i18n/ru';
 describe('App', () => {
   it('renders outside Telegram with the title and five tabs in order', () => {
     render(<App />);
-    expect(screen.getByRole('heading', { level: 1, name: ru.appName })).toBeInTheDocument();
+    // Крупный заголовок — название раздела (решение Макса, TASK-UI); «Lapa» — в заголовке вкладки браузера.
+    expect(screen.getByRole('heading', { level: 1, name: ru.tabs.nearby })).toBeInTheDocument();
     const nav = screen.getByRole('navigation', { name: ru.tabsLabel });
     const tabs = within(nav)
       .getAllByRole('button')
@@ -62,10 +63,9 @@ describe('App with catalog', () => {
     expect(
       await screen.findByRole('heading', { level: 2, name: 'Dogtown Pet Clinic' }),
     ).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: ru.tabs.catalog })).toHaveAttribute(
-      'aria-current',
-      'page',
-    );
+    // На карточке нижняя панель скрыта, внизу закреплена кнопка записи (DESIGN.md §4).
+    expect(screen.queryByRole('navigation', { name: ru.tabsLabel })).toBeNull();
+    expect(screen.getByRole('button', { name: ru.venue.book })).toBeInTheDocument();
   });
 
   it('switches to English and remembers the choice', async () => {
@@ -73,7 +73,7 @@ describe('App with catalog', () => {
     const { en } = await import('./i18n/en');
     const { unmount } = render(<App />);
     await user.click(screen.getByRole('button', { name: 'English' }));
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(en.appName);
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(en.tabs.nearby);
     expect(screen.getByRole('button', { name: en.tabs.catalog })).toBeInTheDocument();
     expect(document.documentElement.lang).toBe('en');
     unmount();

@@ -9,6 +9,9 @@ import { readConfig } from '../lib/config';
 import { PATTAYA, type LatLng } from '../lib/geo';
 import { loadGoogleMaps, onMapsAuthFailure, type MapsLibs } from '../lib/maps';
 import type { GeoStatus } from '../lib/useGeolocation';
+import { useTheme } from '../theme/context';
+import { tokenValue } from '../theme/theme';
+import { Icon } from './Icon';
 
 type Props = {
   venues: VenueListItem[];
@@ -19,11 +22,17 @@ type Props = {
   onUnavailable: () => void;
 };
 
-const BRAND = { background: '#0B6B58', borderColor: '#08483B', glyphColor: '#FFFFFF' };
+/** Метка в цветах текущей палитры (design/tokens.css): акцент с белой каймой. */
+const pinColors = () => ({
+  background: tokenValue('--tint'),
+  borderColor: tokenValue('--surface'),
+  glyphColor: tokenValue('--on-tint'),
+});
 
 /** Карта Google: маркеры из наших координат, кластеры, превью по нажатию. */
 export function VenueMap({ venues, position, geoStatus, onRequestLocation, onUnavailable }: Props) {
   const { t, lang } = useI18n();
+  const { theme } = useTheme();
   const [initialLang] = useState(lang); // язык карты задаётся один раз при загрузке API
   const { mapsApiKey, mapsMapId } = readConfig();
   const container = useRef<HTMLDivElement>(null);
@@ -63,13 +72,14 @@ export function VenueMap({ venues, position, geoStatus, onRequestLocation, onUna
   useEffect(() => {
     if (!ready) return;
     const { map, libs } = ready;
+    const colors = pinColors(); // палитра меняется — эффект пересоздаёт метки (theme в зависимостях)
     const markers = venues
       .filter((v) => v.lat !== null && v.lng !== null)
       .map((v) => {
         const marker = new libs.AdvancedMarkerElement({
           position: { lat: v.lat!, lng: v.lng! },
           title: venueName(v),
-          content: new libs.PinElement(BRAND),
+          content: new libs.PinElement(colors),
           gmpClickable: true,
         });
         marker.addEventListener('gmp-click', () => setSelectedId(v.id));
@@ -97,7 +107,7 @@ export function VenueMap({ venues, position, geoStatus, onRequestLocation, onUna
       clusterer.clearMarkers();
       clusterer.setMap(null);
     };
-  }, [ready, venues, t.map]);
+  }, [ready, venues, t.map, theme]);
 
   // Позиция пользователя: точка «Вы здесь» (подпись меняется вместе с языком).
   useEffect(() => {
@@ -153,14 +163,15 @@ function MapPreview({ venue, onClose }: { venue: VenueListItem; onClose: () => v
     .filter(Boolean)
     .join(' · ');
   return (
-    <div className="card map-preview" role="dialog" aria-label={venueName(venue)}>
+    <div className="map-preview" role="dialog" aria-label={venueName(venue)}>
+      <span className="map-preview__grab" aria-hidden="true" />
       <button
         type="button"
         className="map-preview__close"
         aria-label={t.map.closePreview}
         onClick={onClose}
       >
-        ×
+        <Icon name="close" size={20} />
       </button>
       <h3 className="venue-card__name">{venueName(venue)}</h3>
       <p className="venue-card__meta">{meta}</p>

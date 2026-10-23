@@ -5,6 +5,8 @@ import { ru } from '../i18n/ru';
 import { DEFAULT_FILTERS, type CatalogFilters } from '../lib/catalog/filters';
 import { PATTAYA } from '../lib/geo';
 import { resetMapsAuthFailureForTests } from '../lib/maps';
+import { useTheme } from '../theme/context';
+import { ThemeProvider } from '../theme/ThemeProvider';
 import { CatalogScreen } from '../screens/CatalogScreen';
 import { makeVenue } from '../test/catalogSample';
 import { memorySource, renderWithProviders } from '../test/render';
@@ -68,6 +70,24 @@ const venues = [
   makeVenue({ id: 'b', name_original: 'Beta Pet', lat: 13.17, lng: 100.93 }),
   makeVenue({ id: 'c', name_original: 'No Coords Clinic', lat: null, lng: null }),
 ];
+
+function ThemedHarness() {
+  return (
+    <ThemeProvider>
+      <PaletteSwitch />
+      <Harness />
+    </ThemeProvider>
+  );
+}
+
+function PaletteSwitch() {
+  const { theme, setTheme } = useTheme();
+  return (
+    <button type="button" onClick={() => setTheme(theme === 'teplo' ? 'tishina' : 'teplo')}>
+      switch-palette
+    </button>
+  );
+}
 
 function Harness() {
   const [filters, setFilters] = useState<CatalogFilters>({ ...DEFAULT_FILTERS, view: 'map' });
@@ -142,6 +162,33 @@ describe('catalog map', () => {
 
     await user.click(within(preview).getByRole('button', { name: ru.map.closePreview }));
     expect(screen.queryByRole('dialog')).toBeNull();
+  });
+
+  it('colours pins from the current palette tokens and recreates them on palette change', async () => {
+    vi.stubEnv('VITE_GOOGLE_MAPS_API_KEY', 'test-key');
+    const root = document.documentElement.style;
+    root.setProperty('--tint', 'tint-a');
+    root.setProperty('--surface', 'surface-a');
+    root.setProperty('--on-tint', 'on-tint-a');
+    renderWithProviders(<ThemedHarness />, { source: memorySource(venues) });
+    await vi.waitFor(() => expect(fake.clusters).toHaveLength(1));
+    const pin = (fake.markers[0]!.options.content as unknown as FakePin).options;
+    expect(pin).toEqual({
+      background: 'tint-a',
+      borderColor: 'surface-a',
+      glyphColor: 'on-tint-a',
+    });
+
+    root.setProperty('--tint', 'tint-b');
+    await userEvent.setup().click(screen.getByRole('button', { name: 'switch-palette' }));
+    await vi.waitFor(() => expect(fake.clusters).toHaveLength(2));
+    const newPin = (fake.markers.at(-1)!.options.content as unknown as FakePin).options as {
+      background: string;
+    };
+    expect(newPin.background).toBe('tint-b');
+    root.removeProperty('--tint');
+    root.removeProperty('--surface');
+    root.removeProperty('--on-tint');
   });
 
   it('falls back to the list when the Maps API fails to load', async () => {

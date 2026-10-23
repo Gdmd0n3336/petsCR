@@ -5,6 +5,7 @@ import type { VenueListItem } from '../lib/catalog/filters';
 import { areaName } from '../lib/catalog/names';
 import { useVenueName } from '../lib/catalog/useVenueName';
 import { telHref } from '../lib/links';
+import { Icon } from './Icon';
 import { VenueNameToggle } from './VenueName';
 
 export function VenueCard({ venue }: { venue: VenueListItem }) {
@@ -21,13 +22,20 @@ export function VenueCard({ venue }: { venue: VenueListItem }) {
         : t.venue.googleNone;
 
   return (
-    <li className="card venue-card">
+    <li className="venue-card">
       <Link href={`/venue/${venue.id}`} className="venue-card__link">
-        <h3 className="venue-card__name">{name.shown}</h3>
-        <p className="venue-card__meta">{meta}</p>
-        <p className="venue-card__rating">{google}</p>
+        <span className="venue-card__text">
+          <h3 className="venue-card__name">{name.shown}</h3>
+          <p className="venue-card__meta">{meta}</p>
+          <p className="venue-card__rating">
+            {venue.google_rating !== null && (
+              <Icon name="star" size={14} filled className="venue-card__star" />
+            )}
+            {google}
+          </p>
+        </span>
+        <Icon name="chevronRight" size={20} className="venue-card__chevron" />
       </Link>
-      <VenueNameToggle name={name} />
       <div className="venue-card__footer">
         {venue.is_24_7 && <span className="badge">{t.venue.is247}</span>}
         {venue.is_demo && <span className="badge badge--muted">{t.demoBadge}</span>}
@@ -36,6 +44,8 @@ export function VenueCard({ venue }: { venue: VenueListItem }) {
             {t.venue.distance(formatNumber(venue.distanceKm, lang, 1))}
           </span>
         )}
+        <span className="venue-card__spacer" />
+        <VenueNameToggle name={name} />
         {venue.phone && (
           <a className="button button--secondary venue-card__call" href={telHref(venue.phone)}>
             {t.venue.call}

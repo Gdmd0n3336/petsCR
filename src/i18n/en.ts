@@ -26,6 +26,13 @@ export const en: Messages = {
     bookings: { empty: 'You have no bookings yet' },
     shop: { empty: 'The shop is coming soon' },
     pet: { empty: 'Pet profile is coming soon' },
+    appearance: {
+      title: 'Appearance',
+      palette: 'Palette',
+      hint: 'Only the colours change; everything else stays the same.',
+      tishina: 'Quiet',
+      teplo: 'Warm',
+    },
   },
   sampleBanner: 'Test mode: sample data',
   demoBadge: 'demo data',

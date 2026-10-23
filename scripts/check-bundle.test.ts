@@ -1,5 +1,5 @@
 // @ts-expect-error -- .mjs-скрипт без типов
-import { findProblems } from './check-bundle.mjs';
+import { findFontProblems, findProblems } from './check-bundle.mjs';
 
 const fakeKey = 'AIza' + 'x'.repeat(35);
 
@@ -23,5 +23,24 @@ describe('check-bundle', () => {
 
   it('passes a clean build', () => {
     expect(findProblems({ 'index.js': 'console.log(1)' }, 'index.js')).toEqual([]);
+  });
+
+  it('flags Google Fonts requests', () => {
+    expect(
+      findProblems({ 'a.css': '@import url(https://fonts.googleapis.com/css2?family=Inter)' }, 'x'),
+    ).toEqual(['a.css: requests Google Fonts']);
+  });
+
+  it('requires Inter latin/cyrillic and Noto Sans Thai thai and nothing else', () => {
+    const ok = [
+      'inter-latin-wght-normal-a.woff2',
+      'inter-cyrillic-wght-normal-b.woff2',
+      'noto-sans-thai-thai-wght-normal-c.woff2',
+    ];
+    expect(findFontProblems(ok)).toEqual([]);
+    expect(findFontProblems(ok.slice(1))).toEqual(['font missing: inter-latin-wght-normal']);
+    expect(findFontProblems([...ok, 'manrope-latin-wght-normal-d.woff2'])).toEqual([
+      'unexpected font file: manrope-latin-wght-normal-d.woff2',
+    ]);
   });
 });

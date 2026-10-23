@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App';
 import { initTelegram } from './lib/telegram';
 import './fonts.css';
+import '../design/tokens.css';
 import './styles.css';
 
 initTelegram();
