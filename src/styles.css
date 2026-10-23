@@ -150,6 +150,10 @@ p {
   padding: 16px;
 }
 
+.group--padded .segmented + .hint {
+  margin-top: 12px;
+}
+
 .list > li + li,
 .ratings > * + * {
   border-top: 1px solid var(--line);
@@ -376,9 +380,12 @@ p {
   font-weight: 600;
 }
 
+.venue-card__spacer {
+  flex: 1;
+}
+
 .venue-card__call {
   min-height: var(--tap-min);
-  margin-left: auto;
   padding: 0 12px;
   background: var(--tint-bg);
   color: var(--tint);
@@ -834,6 +841,7 @@ p {
 
 .map-preview .venue-card__call {
   min-height: 50px;
+  margin-left: auto;
   padding: 0 24px;
   background: var(--tint);
   color: var(--on-tint);
@@ -846,6 +854,86 @@ p {
   background: var(--seg-bg);
   color: var(--ink);
   font-size: 14px;
+}
+
+/* ===== Состояния нажатия, наведения и недоступности (без сдвига раскладки) ===== */
+.button,
+.chip,
+.segmented__item,
+.link-button,
+.tab,
+.venue-card__link,
+.map-preview__close {
+  transition:
+    background-color 120ms ease-out,
+    color 120ms ease-out,
+    filter 120ms ease-out;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.button:active {
+  filter: brightness(0.92);
+}
+
+.button--secondary:active,
+.chip:active,
+.segmented__item:active,
+.link-button:active,
+.map-preview__close:active {
+  background: var(--tint-bg);
+  filter: none;
+}
+
+.chip[aria-pressed='true']:active {
+  background: var(--tint);
+  filter: brightness(0.92);
+}
+
+.venue-card:has(.venue-card__link:active) {
+  background: var(--tint-bg);
+}
+
+.tab:active {
+  color: var(--tint);
+}
+
+@media (hover: hover) {
+  .button--secondary:hover,
+  .chip:not([aria-pressed='true']):hover,
+  .link-button:hover,
+  .map-preview__close:hover {
+    background: var(--tint-bg);
+  }
+
+  .venue-card:has(.venue-card__link:hover) {
+    background: var(--ground);
+  }
+
+  .tab:hover {
+    color: var(--ink);
+  }
+}
+
+.button:disabled,
+.chip:disabled,
+.segmented__item:disabled {
+  background: var(--seg-bg);
+  color: var(--sub);
+  filter: none;
+  cursor: default;
+}
+
+/* Поверхности браузера тоже в цветах палитры. */
+::selection {
+  background: var(--tint-bg);
+  color: var(--ink);
+}
+
+input,
+textarea,
+select {
+  caret-color: var(--tint);
+  accent-color: var(--tint);
 }
 
 /* ===== Фокус и движение ===== */

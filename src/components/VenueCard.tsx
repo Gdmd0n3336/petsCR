@@ -36,7 +36,6 @@ export function VenueCard({ venue }: { venue: VenueListItem }) {
         </span>
         <Icon name="chevronRight" size={20} className="venue-card__chevron" />
       </Link>
-      <VenueNameToggle name={name} />
       <div className="venue-card__footer">
         {venue.is_24_7 && <span className="badge">{t.venue.is247}</span>}
         {venue.is_demo && <span className="badge badge--muted">{t.demoBadge}</span>}
@@ -45,6 +44,8 @@ export function VenueCard({ venue }: { venue: VenueListItem }) {
             {t.venue.distance(formatNumber(venue.distanceKm, lang, 1))}
           </span>
         )}
+        <span className="venue-card__spacer" />
+        <VenueNameToggle name={name} />
         {venue.phone && (
           <a className="button button--secondary venue-card__call" href={telHref(venue.phone)}>
             {t.venue.call}
