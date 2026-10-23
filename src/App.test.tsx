@@ -61,7 +61,7 @@ describe('App with catalog', () => {
 
     expect(window.location.hash).toBe('#/venue/v1');
     expect(
-      await screen.findByRole('heading', { level: 2, name: 'Dogtown Pet Clinic' }),
+      await screen.findByRole('heading', { level: 1, name: 'Dogtown Pet Clinic' }),
     ).toBeInTheDocument();
     // На карточке нижняя панель скрыта, внизу закреплена кнопка записи (DESIGN.md §4).
     expect(screen.queryByRole('navigation', { name: ru.tabsLabel })).toBeNull();

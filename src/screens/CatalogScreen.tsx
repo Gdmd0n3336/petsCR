@@ -126,7 +126,7 @@ function VenueList({
   return (
     <ul className="list">
       {items.map((venue) => (
-        <VenueCard key={venue.id} venue={venue} />
+        <VenueCard key={venue.id} venue={venue} headingLevel={2} />
       ))}
     </ul>
   );

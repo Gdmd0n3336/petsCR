@@ -86,7 +86,7 @@ describe('VenueScreen', () => {
   it('shows the header, both ratings separately with their sources, and actions', async () => {
     renderVenue();
     expect(
-      await screen.findByRole('heading', { level: 2, name: 'โรงพยาบาลสัตว์อุ้มรัก อ่างศิลา' }),
+      await screen.findByRole('heading', { level: 1, name: 'โรงพยาบาลสัตว์อุ้มรัก อ่างศิลา' }),
     ).toBeInTheDocument();
     expect(
       within(screen.getByTestId('rating-google')).getByText('Google 4,6 · 707 отзывов'),
@@ -127,7 +127,7 @@ describe('VenueScreen', () => {
     const user = userEvent.setup();
     renderVenue({ lang: 'en' });
     const heading = await screen.findByRole('heading', {
-      level: 2,
+      level: 1,
       name: 'โรงพยาบาลสัตว์อุ้มรัก อ่างศิลา',
     });
     expect(heading).toHaveTextContent('โรงพยาบาลสัตว์อุ้มรัก อ่างศิลา');

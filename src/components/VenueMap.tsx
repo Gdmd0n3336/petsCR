@@ -173,7 +173,7 @@ function MapPreview({ venue, onClose }: { venue: VenueListItem; onClose: () => v
       >
         <Icon name="close" size={20} />
       </button>
-      <h3 className="venue-card__name">{venueName(venue)}</h3>
+      <h2 className="venue-card__name">{venueName(venue)}</h2>
       <p className="venue-card__meta">{meta}</p>
       <p className="venue-card__rating">
         {venue.google_rating !== null
